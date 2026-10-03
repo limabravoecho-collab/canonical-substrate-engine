@@ -1,4 +1,4 @@
-CANONICAL SUBSTRATE ENGINE (CSE) v1.0: A Deterministic Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v1.1: A Deterministic Cosmological Logic Model
 
 SYSTEM: Root Container (Nest 0)
 BOUNDARY: All subordinate nested states contained within Nest 0.
@@ -147,16 +147,18 @@ NEST 8: Conversion Engine (Master Chain from Substrate Units to Observer 0 Units
 --------------------------------------------------
 RULES:
 1. Foundational Axiom: $M = 2,147,483,647 = 2^{31} - 1$ is the foundational limit of the model. At $M$ the reversal $P$ is mandatory (Nest 0).
-2. Substrate Constants: $\hbar$, $c$ and $G$ are substrate constants. The numbers that humans give them are these constants written in human units.
-3. Substrate Speed: In substrate units, $c$ = 1 position per transition.
-4. Human Units: Meters, seconds and joules are human engineering units. They belong to Observer 0 (Nest 7, Rule 6).
-5. Master Chain: There is one master chain of conversion. It has 3 links. Each link uses the link before it.
+2. The Three Steps: Nests 0 to 3 count three things, and every transition moves 1 position and compresses or decompresses 1 energy unit. One position is the Planck length. One transition is the Planck time. One energy unit is the Planck energy. In substrate units each is exactly 1.
+3. Substrate Constants: $\hbar$, $c$ and $G$ are the three ratios between the three steps: $c$ = Planck length / Planck time, $\hbar$ = Planck energy x Planck time, and $G$ = Planck length x $c^4$ / Planck energy. In substrate units each is exactly 1.
+4. Human Units: Meters, seconds and joules, and the units built from them, are human engineering units. They belong to Observer 0 (Nest 7, Rule 6).
+5. Calibration: The conversion is a chain of formulas (Rule 6). Its only inputs are $\hbar$, $c$ and $G$ written in human units. Two of them, $c$ and $\hbar$, are fixed by the definitions of the meter and the kilogram. $G$ is measured. Nothing else enters.
+6. Master Chain: There is one master chain of conversion. It has 3 links. Each link uses the link before it.
    - Link 1 (space): 1 position = $\ell_P = \sqrt{\hbar G / c^3} \approx 1.616 \times 10^{-35}$ meters.
-   - Link 2 (time): 1 transition = $\ell_P / c \approx 5.391 \times 10^{-44}$ seconds.
-   - Link 3 (energy): 1 energy unit = $\hbar$ / (1 transition in seconds) $\approx 1.956 \times 10^{9}$ joules.
-6. Ratio Constants: Constants with no units (the fine-structure constant, $\pi$ and others) are not part of the master chain. They are results that Observer 0 and Observer 1 find.
-7. No Other Multipliers: No multiplier may enter the master chain unless it comes from $M$ or from the 3 substrate constants.
-8. Derived Examples: These follow from the 3 links. They are examples, not extra links.
+   - Link 2 (time): 1 transition = $\ell_P / c = \sqrt{\hbar G / c^5} \approx 5.391 \times 10^{-44}$ seconds.
+   - Link 3 (energy): 1 energy unit = $\hbar$ / (1 transition in seconds) $= \sqrt{\hbar c^5 / G} \approx 1.956 \times 10^{9}$ joules.
+7. Pure Numbers: The model fixes each constant as one unit. It does not fix pure-number factors such as $2\pi$. The master chain uses $\hbar$, not $h$.
+8. Ratio Constants: Constants with no units (the fine-structure constant, $\pi$ and others) are not part of the master chain. They are results that Observer 0 and Observer 1 find. As ratios, their place in the model is the Nest 3 line.
+9. No Other Multipliers: No multiplier may enter the master chain unless it comes from $M$ or from the 3 substrate constants.
+10. Derived Examples: These follow from the 3 links. They are examples, not extra links.
    - Mass: 1 energy unit / $c^2$ $\approx 2.176 \times 10^{-8}$ kilograms.
    - Force: 1 energy unit / 1 position $\approx 1.210 \times 10^{44}$ newtons.
    - Power: 1 energy unit / 1 transition $\approx 3.628 \times 10^{52}$ watts.
