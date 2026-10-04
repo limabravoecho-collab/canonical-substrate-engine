@@ -1,11 +1,13 @@
 /*
- * counter_test.c - CSE v1.0
+ * counter_test.c - CSE v1.3
  *
- * Runs a real signed 32-bit counter through one full loop and counts
- * every step and every sign flip. Compare the result with the CYCLE COUNT
- * in Nest 0 of CSE_MODEL.txt:
+ * Runs a real 32-bit counter through one full loop and counts every step
+ * and every sign flip. Compare the result with CSE_MODEL.txt:
  *
+ *   CYCLE COUNT (Nest 0):
  *     1 + 2,147,483,647 + 1 + 2,147,483,647 = 4,294,967,296
+ *   TICK (Header) and Total Runtime (Nest 2, Rule 9):
+ *     highest counter value = 2^32 - 1 = 4,294,967,295, then back to 0
  *
  * Build:  gcc -O2 -o counter_test counter_test.c
  * Run:    ./counter_test        (a few seconds)
@@ -15,9 +17,11 @@
  *   flip 2 at step 4294967296: -1 -> 0, plain steps since last flip: 2147483647
  *   total steps to return to 0: 4294967296
  *   positive values: 2147483647, negative values: 2147483648, sign flips: 2
+ *   highest counter value (ticks): 4294967295, reached at step 4294967295
  *
  * What matches the model:  2 flips per cycle, M plain steps between them,
- *                          4,294,967,296 steps in the closed loop.
+ *                          4,294,967,296 steps in the closed loop,
+ *                          highest counter value 4,294,967,295, then 0.
  * What differs:            in the computer each flip is itself a step, and the
  *                          negative side has one more value than the positive side.
  */
@@ -29,12 +33,19 @@ int main(void) {
     int32_t x = 0, prev = 0;   /* the same bits, read as a signed value */
     uint64_t steps = 0, flips = 0, since = 0;
     uint64_t pos = 0, neg = 0;
+    uint32_t highest = 0;      /* the same bits, read as the runtime counter */
+    uint64_t highest_step = 0;
 
     do {
         prev = x;
         u += 1;                /* one increment; wraps at 2^32 by definition */
         x = (int32_t)u;
         steps++;
+
+        if (u > highest) {
+            highest = u;
+            highest_step = steps;
+        }
 
         if ((prev < 0) != (x < 0)) {
             flips++;
@@ -53,5 +64,7 @@ int main(void) {
     printf("total steps to return to 0: %llu\n", (unsigned long long)steps);
     printf("positive values: %llu, negative values: %llu, sign flips: %llu\n",
            (unsigned long long)pos, (unsigned long long)neg, (unsigned long long)flips);
+    printf("highest counter value (ticks): %llu, reached at step %llu\n",
+           (unsigned long long)highest, (unsigned long long)highest_step);
     return 0;
 }
