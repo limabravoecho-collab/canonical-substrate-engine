@@ -1,4 +1,4 @@
-# CSE v1.0 — EXAMPLES
+# CSE v1.3 — EXAMPLES
 
 Five science placeholders, with the arithmetic shown.
 
@@ -7,10 +7,11 @@ Five science placeholders, with the arithmetic shown.
 1. These are **placeholders**. A placeholder shows how a measured number can be put next to a CSE quantity. It is not a derivation, not a prediction and not evidence.
 2. Every example has the same five parts: the measurement, the CSE quantity, the arithmetic, the result, and what CSE does not explain.
 3. The result is stated plainly, including when it does not match. Nothing here was adjusted to fit.
-4. **Only ratios are used.** With Nest 8, Link 1, the whole CSE sphere has a maximum radius of about 3.47 × 10^−26 meters. The observable universe is about 1.27 × 10^52 times larger. CSE v1.0 does not define the scale between tiers, so sizes cannot be compared. Ratios can.
-5. Every CSE number below can be reproduced with `cse_engine.py`.
+4. **Sizes are not compared.** With Nest 8, Link 1, one loop has a maximum radius of about 3.47 × 10^−26 meters. The observable universe is about 1.27 × 10^52 times larger. CSE v1.3 assigns that loop to a smaller tier and gives the ratio to the whole-sphere tier for time only (Nest 8, Rule 12). The size of one position on the whole-sphere tier is not stated, so sizes cannot be compared. Ratios can.
+5. **"Today" comes from Appendix A.** CSE v1.3 converts Observer 0's age of 13.8 billion years into tick 1,797,620,521 (Appendix A, line 7.3). In Arc 1 the position equals the tick. This rests on the two postulates of Appendix A: alpha inverse as the dilation index, and the conversion ratio 1052.
+6. Every CSE number below can be reproduced with `cse_engine.py`.
 
-Symbols: `M = 2,147,483,647`. `s` = position. Compressed fraction = `s / M`. Uncompressed fraction = `1 − s / M`.
+Symbols: `M = 2,147,483,647`. `s` = position. Bound fraction = `s / M`. Free fraction = `1 − s / M`.
 
 ---
 
@@ -18,22 +19,29 @@ Symbols: `M = 2,147,483,647`. `s` = position. Compressed fraction = `s / M`. Unc
 
 **Measurement.** Dark energy is about 0.685 of the total energy density of the universe today (Planck 2018: 0.6847 ± 0.0073).
 
-**CSE quantity (assumed reading).** The uncompressed fraction, `1 − s / M` (Nest 3, Rule 5). The reading is an assumption: Nest 3 names the least compressed end "electromagnetic radiation", not dark energy.
+**CSE quantity (assumed reading).** The free fraction, `1 − s / M` (Nest 3, Rule 5), at today's position. The reading is an assumption: Nest 3 names the free end "electromagnetic radiation", not dark energy.
 
 **Arithmetic.**
 
 ```
+Today's position (Appendix A, line 7.3):   s = 1,797,620,521
+check: python3 cse_engine.py position 1797620521
+       bound 0.837082, free 0.162918
+
+The position this reading would need:
 1 − s / M = 0.685
 s = 0.315 × 2,147,483,647 = 676,457,349        (rounded to a whole position)
 check: python3 cse_engine.py position 676457349
-       compressed 0.315000, uncompressed 0.685000
+       bound 0.315000, free 0.685000
+check: python3 cse_engine.py order_b 676457349
+       5.19 billion dilated years
 ```
 
-**Result.** Under this reading, "today" is position 676,457,349. This is a restatement of the measured number in CSE units. It is not a match, because CSE does not say which position "today" is.
+**Result. Mismatch.** CSE gives a free fraction of 0.163 today. The measured dark energy share is 0.685. For the two to agree, today would have to be position 676,457,349, which is 5.19 billion years after the start, not 13.8 billion.
 
-**Direction check: mismatch.** In CSE, Arc 1 is the expansion, and the uncompressed fraction falls as the sphere expands. Measurement says the dark energy share rises as the universe expands. Under this reading the two move in opposite directions.
+**Direction check: mismatch.** In CSE, Arc 1 is the expansion, and the free fraction falls as the sphere expands. Measurement says the dark energy share rises as the universe expands. Under this reading the two move in opposite directions.
 
-**What CSE does not explain.** Why the value is 0.685. Which position is the present. What dark energy is.
+**What CSE does not explain.** Why the value is 0.685. What dark energy is.
 
 ---
 
@@ -41,22 +49,25 @@ check: python3 cse_engine.py position 676457349
 
 **Measurement.** Matter is about 0.315 of the total. Of that, dark matter is about 0.265 and ordinary matter about 0.049 (Planck 2018). Dark matter is about 5.4 times ordinary matter.
 
-**CSE quantity (assumed reading).** The compressed fraction, `s / M`, at the same position as Example 1. Nest 3, Rule 6 places matter at the most compressed end.
+**CSE quantity (assumed reading).** The bound fraction, `s / M`, at today's position, the same position as Example 1. Nest 3, Rule 6 places matter at the bound end.
 
 **Arithmetic.**
 
 ```
-compressed fraction at s = 676,457,349:   0.315
+bound fraction at today's position, s = 1,797,620,521:   0.837
+measured matter share:                                    0.315
+
+The measured split, written in CSE units:
 dark matter:      0.265 × M = 569,083,166 energy units
 ordinary matter:  0.049 × M = 105,226,699 energy units
 ratio:            0.265 / 0.049 = 5.41
 ```
 
-**Result.** The total, 0.315, is consistent with Example 1 by construction: both use one position. The split into 0.265 and 0.049 is **not computable** in CSE v1.0. The units above are the measured fractions written in CSE units.
+**Result. Mismatch.** CSE gives a bound fraction of 0.837 today. The measured matter share is 0.315. This is the mismatch of Example 1 seen from the other side: both examples use one position, and both pairs of numbers add up to 1. The split into 0.265 and 0.049 is **not computable** in CSE v1.3. The units above are the measured fractions written in CSE units.
 
-**Direction check: mismatch.** The same as Example 1, from the other side: in CSE the compressed fraction rises during the expansion, and measurement says the matter share falls.
+**Direction check: mismatch.** The same as Example 1, from the other side: in CSE the bound fraction rises during the expansion, and measurement says the matter share falls.
 
-**What CSE does not explain.** The ratio 5.4. Nest 5 defines dense matter pockets and voids but gives no formula for how much compressed energy sits in each.
+**What CSE does not explain.** The ratio 5.4. Nest 5 defines dense matter pockets and voids but gives no formula for how much bound energy sits in each.
 
 ---
 
@@ -71,7 +82,7 @@ ratio:        73.0 / 67.4 = 1.083
 difference:   8.3 %
 ```
 
-**CSE quantity (assumed reading).** Two measurements by Observer 0, made from different places and moments (Nest 6, Rules 2, 4 and 5), with local time running at different rates (Nest 5, Rules 10 and 11).
+**CSE quantity (assumed reading).** Two measurements by Observer 0, made from different places and moments (Nest 6, Rules 2, 4 and 5), with local time running at different rates (Nest 5, Rules 13 and 14).
 
 **Arithmetic.**
 
@@ -80,9 +91,9 @@ If the whole difference came from local time rate:
 required rate ratio between the two measurements = 1.083
 ```
 
-**Result. Not computable.** CSE v1.0 states that local time differs between places. It gives no formula for how much. So CSE cannot produce 1.083 or any other number here.
+**Result. Not computable.** CSE v1.3 states that local time differs between places. It gives no formula for how much. So CSE cannot produce 1.083 or any other number here. The electromagnetic dilation added in v1.3 (Nest 6, Rule 8) does not help: it is one fixed scale, so it cancels in a ratio.
 
-**What CSE does not explain.** The size of the tension. A formula for Nest 5, Rule 10 would be needed first; then this example becomes a real test.
+**What CSE does not explain.** The size of the tension. A formula for Nest 5, Rule 13 would be needed first; then this example becomes a real test.
 
 ---
 
@@ -122,16 +133,18 @@ One energy unit:
       = 3.2325 × 10^−35 meters
       = 2.000 positions
 
-All M energy units (the whole sphere):
+All M energy units (one full loop):
   mass = M × 2.176434e−8 kg = 46.74 kilograms
   r_s  = 6.94 × 10^−26 meters = 4,294,967,294 positions = 2 × M
-  maximum radius of the sphere (Pole 1) = M positions
+  maximum radius of the loop (Pole 1) = M positions
   r_s / maximum radius = 2.000
 ```
 
 **Result. Exact.** In CSE units the Schwarzschild radius is exactly 2 positions per energy unit. This follows from the definitions in Nest 8; it is an identity, not a discovery.
 
-**Consequence.** The whole sphere holds M energy units inside a radius that is never larger than M positions. Its Schwarzschild radius is 2 × M positions. So by standard arithmetic the CSE sphere stays inside its own Schwarzschild radius for the whole cycle. (2 × M = 4,294,967,294 is also the TRANSITION COUNT, because both are 2 × M.)
+**Consequence.** One loop holds M energy units inside a radius that is never larger than M positions. Its Schwarzschild radius is 2 × M positions. So by standard arithmetic the loop stays inside its own Schwarzschild radius for the whole cycle. (2 × M = 4,294,967,294 is also the TRANSITION COUNT, because both are 2 × M.)
+
+**Tier.** CSE v1.3 assigns the loop measured in Planck lengths to a smaller tier (Nest 8, Rule 12). The meters and kilograms above belong to that tier. If the same three unit steps hold on the whole-sphere tier, the identity carries over unchanged, because it is stated in positions and energy units. CSE v1.3 does not state that they do.
 
 **Reading.** Nest 1 says nothing leaves the Root Container. A region inside its own Schwarzschild radius is one that nothing leaves. The two statements agree. CSE does not contain general relativity, so this is a reading, not a result.
 
@@ -143,8 +156,8 @@ All M energy units (the whole sphere):
 
 | # | Placeholder | Result |
 |---|---|---|
-| 1 | Dark energy | Restated in CSE units. Direction check: mismatch. |
-| 2 | Dark matter | Total consistent with Example 1 by construction. Split: not computable. Direction check: mismatch. |
+| 1 | Dark energy | Mismatch: CSE free fraction 0.163 today, measured 0.685. Direction check: mismatch. |
+| 2 | Dark matter | Mismatch: CSE bound fraction 0.837 today, measured 0.315. Split: not computable. Direction check: mismatch. |
 | 3 | Hubble tension | Not computable. A formula for local time is missing. |
 | 4 | Matter–antimatter imbalance | Same order of magnitude. Mismatch by a factor of 2.6. |
 | 5 | Black hole limit | Exact identity: 2 positions per energy unit. |
