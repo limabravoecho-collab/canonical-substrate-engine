@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.0)
+cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.3)
 
 THE RULE
     The engine computes. The LLM only translates.
@@ -11,7 +11,7 @@ WHAT THIS FILE SHOWS
     WIRE POINT 2  the translator rule that keeps the LLM from computing
     WIRE POINT 3  tiers: mapping a real cycle (a day, a year, your own) onto the engine
     WIRE POINT 4  direct engine questions (exact answers, no LLM arithmetic)
-    WIRE POINT 5  the bridge to science: Nest 8 conversions to human units
+    WIRE POINT 5  the bridge to science: the two chains to human units
     WIRE POINT 6  where each piece goes in the message list
     WIRE POINT 7  the call to your own LLM
 
@@ -73,7 +73,7 @@ def tier_words(fraction: float) -> str:
     """The same state in plain words, for an LLM that must not speak numbers."""
     st = tier_state(fraction)
     setting_out = st["phase"] == 1
-    along = st["compressed"] if setting_out else st["uncompressed"]  # 0 to 1 along this arc
+    along = st["bound"] if setting_out else st["free"]  # 0 to 1 along this arc
     if along < 0.1:
         where = "at the start"
     elif along < 0.4:
@@ -116,7 +116,7 @@ def engine_line(now: datetime | None = None, words: bool = True) -> str:
         body = " ".join(f"{name}: {tier_words(f)}." for name, f in tiers.items())
     else:
         body = " ".join(
-            f"{name}: phase {tier_state(f)['phase']}, compressed {tier_state(f)['compressed']:.6f}."
+            f"{name}: phase {tier_state(f)['phase']}, bound {tier_state(f)['bound']:.6f}."
             for name, f in tiers.items())
     return "ENGINE: " + body
 
@@ -125,10 +125,14 @@ def engine_line(now: datetime | None = None, words: bool = True) -> str:
 # WIRE POINT 4: DIRECT ENGINE QUESTIONS
 # For questions about the model itself, call the engine and hand the LLM the
 # exact result. The LLM never does this arithmetic.
-#   "totals"          counts, master chain, whole-sphere values
+#   "totals"          counts, both chains, tier ratio, constants
 #   "state N"         state after counted operation N
 #   "position S"      energy at position S
 #   "local V S"       dense matter pocket or void (Nest 5)
+#   "lag R"           minimum turn lag for a place at radius R (Nest 5, Rule 15)
+#   "order_a YEARS"   Observer 0 dilated years -> undilated years -> ticks (Appendix A)
+#   "order_b TICKS"   ticks -> undilated years -> Observer 0 dilated years (Appendix A)
+#   "appendix_a"      Appendix A, items 7 to 14
 # ==================================================
 def engine_answer(query: str) -> str | None:
     """Return an exact ENGINE block for an engine query, or None if it is not one."""
@@ -136,10 +140,18 @@ def engine_answer(query: str) -> str | None:
     try:
         if parts == ["totals"]:
             result = cse.totals()
+        elif parts == ["appendix_a"]:
+            result = cse.appendix_a()
         elif len(parts) == 2 and parts[0] == "state":
             result = cse.state(int(parts[1]))
         elif len(parts) == 2 and parts[0] == "position":
             result = cse.position(int(parts[1]))
+        elif len(parts) == 2 and parts[0] == "lag":
+            result = cse.turn_lag(int(parts[1]))
+        elif len(parts) == 2 and parts[0] == "order_a":
+            result = cse.order_a(float(parts[1]))
+        elif len(parts) == 2 and parts[0] == "order_b":
+            result = cse.order_b(float(parts[1]))
         elif len(parts) == 3 and parts[0] == "local":
             result = cse.local(float(parts[1]), int(parts[2]))
         else:
@@ -151,19 +163,34 @@ def engine_answer(query: str) -> str | None:
 
 # ==================================================
 # WIRE POINT 5: THE BRIDGE TO SCIENCE
-# Nest 8 converts substrate units to human units. The engine already returns
-# them under "observer_0". Use ratios when you compare with measurements;
+# CSE has two chains to human units. The engine returns both under "observer_0".
+#   planck_tier        the master chain (Nest 8, Rule 6): meters, seconds, joules
+#   whole_sphere_tier  the second chain (Appendix A): ticks and years
+# The second chain rests on two postulates: alpha inverse as the dilation index,
+# and the conversion ratio 1052. Use ratios when you compare with measurements;
 # see EXAMPLES.md for the pattern and for its limits.
 # ==================================================
 def bridge(s: int) -> dict:
     """Position s in substrate units and in Observer 0 units (meters, joules)."""
     p = cse.position(s)
+    planck = p["observer_0"]["planck_tier"]
     return {
         "position": p["position"],
-        "compressed_fraction": p["compressed"],
-        "uncompressed_fraction": p["uncompressed"],
-        "radius_meters": p["observer_0"]["radius_meters"],
-        "compressed_joules": p["observer_0"]["compressed_joules"],
+        "bound_fraction": p["bound"],
+        "free_fraction": p["free"],
+        "radius_meters": planck["radius_meters"],
+        "bound_joules": planck["bound_joules"],
+    }
+
+
+def bridge_years(dilated_years: float) -> dict:
+    """Observer 0 years in substrate ticks, and as a share of the total runtime."""
+    a = cse.order_a(dilated_years)
+    return {
+        "dilated_years": a["dilated_years"],
+        "undilated_years": a["undilated_years"],
+        "ticks": a["ticks"],
+        "percent_of_runtime": a["ticks"] / cse.TICK_COUNT * 100,
     }
 
 
@@ -210,7 +237,7 @@ def call_your_llm(messages: list) -> str:
 if __name__ == "__main__":
     fixed_now = datetime(2026, 10, 1, 9, 30)   # a fixed moment, so the output is repeatable
 
-    for question in ("Where does the day stand?", "position 676457349"):
+    for question in ("Where does the day stand?", "position 676457349", "order_a 13.8e9"):
         print("=" * 60)
         print("USER:", question)
         for m in build_messages(question, now=fixed_now):
@@ -218,5 +245,7 @@ if __name__ == "__main__":
             print(m["content"])
 
     print("=" * 60)
-    print("BRIDGE (WIRE POINT 5):")
+    print("BRIDGE (WIRE POINT 5), master chain:")
     print(json.dumps(bridge(676457349), indent=2))
+    print("BRIDGE (WIRE POINT 5), second chain:")
+    print(json.dumps(bridge_years(13.8e9), indent=2))
