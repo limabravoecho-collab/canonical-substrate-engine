@@ -4,7 +4,7 @@ A deterministic closed-loop logic model with a 2^32 cycle and an executable Pyth
 
 **Status.** CSE is a model for study. The author does not claim that it is a theory of everything. It is published completely open for testing as one.
 
-**Version note.** Only `CSE_MODEL.txt` is at v1.3. The engine, the AI example, the counter test and `EXAMPLES.md` are still at v1.0 and do not yet cover what v1.3 added.
+**Version note.** All files are at v1.3. The engine's output names changed from v1.0: see "Changed in the other files in v1.3".
 
 ---
 
@@ -55,15 +55,25 @@ The full text is in `CSE_MODEL.txt`.
 
 ---
 
+## Changed in the other files in v1.3
+
+- **Engine: new commands.** `order_a`, `order_b`, `appendix_a` and `lag`. The engine now computes the tick, both orders of Appendix A, the tier ratio, the constants of Appendix B and the minimum turn lag.
+- **Engine: renamed output (breaking change from v1.0).** "compressed" and "uncompressed" are now "bound" and "free", to match the model text. The Observer 0 block is split into `planck_tier` (the master chain) and `whole_sphere_tier` (ticks and years). In `totals`, `whole_sphere` is now `planck_tier_loop`.
+- **AI example.** Accepts the new engine queries, and has a second bridge from Observer 0 years to ticks.
+- **Counter test.** Also reports the highest counter value, 4,294,967,295, which is the total runtime in ticks.
+- **Examples.** Examples 1 and 2 now use CSE's own value for "today" from Appendix A, and both are stated as mismatches.
+
+---
+
 ## Files
 
 | File | Version | What it is |
 |---|---|---|
 | `CSE_MODEL.txt` | v1.3 | The model: header, Nests 0 to 10, Appendix A and Appendix B. Also usable as a prompt. |
-| `cse_engine.py` | v1.0 | The model in executable form. Standard library only. |
-| `cse_ai_example.py` | v1.0 | How to wire the engine into an AI system, with comments at every wire point. |
-| `counter_test.c` | v1.0 | A real signed 32-bit counter, run through one full loop. |
-| `EXAMPLES.md` | v1.0 | Five science placeholders with the arithmetic shown. |
+| `cse_engine.py` | v1.3 | The model in executable form. Standard library only. |
+| `cse_ai_example.py` | v1.3 | How to wire the engine into an AI system, with comments at every wire point. |
+| `counter_test.c` | v1.3 | A real 32-bit counter, run through one full loop. |
+| `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. |
 | `LICENSE.md` | | PolyForm Noncommercial 1.0.0. |
 
 ---
@@ -72,10 +82,14 @@ The full text is in `CSE_MODEL.txt`.
 
 ```
 python3 cse_engine.py selftest            # checks the engine against the model
-python3 cse_engine.py totals              # counts, conversions, whole-sphere values
+python3 cse_engine.py totals              # counts, both chains, tier ratio, constants
 python3 cse_engine.py state 2147483649    # state after one counted operation
 python3 cse_engine.py position 1000       # energy at one position
 python3 cse_engine.py local 0.75 1000     # dense matter pocket or void
+python3 cse_engine.py lag 1000            # minimum turn lag at one radius
+python3 cse_engine.py order_a 13.8e9      # Observer 0 years -> ticks
+python3 cse_engine.py order_b 4294967295  # ticks -> Observer 0 years
+python3 cse_engine.py appendix_a          # Appendix A, items 7 to 14
 
 python3 cse_ai_example.py                 # shows what an LLM would receive
 
@@ -100,16 +114,18 @@ If you integrate CSE into your own AI:
 2. **Customize your prompt for your own target field.** CSE gives the structure. Your prompt gives the voice and the subject.
 3. **Add your own tiers.** Any closed cycle in your field can be mapped onto the engine as a fraction from 0 to 1. The example file maps a day and a year.
 
-What the engine computes: the cycle, the state at any counted operation, the energy fractions, the pocket-or-void test, and the Nest 8 master chain conversions.
+What the engine computes: the cycle and the tick, the state at any counted operation, the energy fractions, the pocket-or-void test, the minimum turn lag, the Nest 8 master chain and tier ratio, both orders of Appendix A, and the constants of Appendix B.
 
-What the engine does not compute: anything the model gives no formula for (see "Known open points"), and anything added in v1.3: ticks, Appendix A, Appendix B, the tier ratio and the turn lag.
+What the engine does not compute: anything the model gives no formula for. See "Known open points".
+
+The engine prints full arithmetic values. Appendix A shows the same values cut at the certainty limit of alpha inverse.
 
 ---
 
 ## Testing CSE
 
-- `selftest` checks the engine's formulas against a step-by-step walk of the loop.
-- `counter_test.c` checks the claim of Nest 10 on a real machine: 2 sign flips per cycle, M plain steps between them, 4,294,967,296 steps in the loop.
+- `selftest` checks the engine's formulas against a step-by-step walk of the loop, and checks the engine's Appendix A results against the numbers printed in `CSE_MODEL.txt`.
+- `counter_test.c` checks the claim of Nest 10 on a real machine: 2 sign flips per cycle, M plain steps between them, 4,294,967,296 steps in the loop, and a highest counter value of 4,294,967,295.
 - `EXAMPLES.md` puts five measurements next to CSE quantities and states each result plainly, including the mismatches.
 - Appendix A and Appendix B show every line of their arithmetic, so each can be checked with a calculator.
 
@@ -125,7 +141,7 @@ These are stated here so that nobody has to find them the hard way.
 2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13 and 14), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range.
 3. **The axiom.** M = 2^31 − 1 is declared as an axiom (Nest 8, Rule 1). The match with the 32-bit register (Nest 10, Rules 4 and 5) is stated, not derived.
 4. **Statements.** Nests 6, 7 and 10 are statements. They are not calculations, and the engine does not compute them.
-5. **Direction check.** Under the simplest reading, CSE's energy fractions move in the opposite direction to the measured dark energy and matter shares. See `EXAMPLES.md`, Examples 1 and 2.
+5. **Energy shares.** Under the simplest reading, CSE's bound and free fractions today, 0.837 and 0.163, do not match the measured matter and dark energy shares, 0.315 and 0.685. They also move in the opposite direction as the sphere expands. See `EXAMPLES.md`, Examples 1 and 2.
 6. **Postulates in Appendix A.** Alpha inverse as the dilation index, and the conversion ratio 1052, are postulates. The 1052 was found by dividing Observer 0's lifespan estimate by the total runtime, and the whole number was kept. The tier ratio in Nest 8, Rule 12 is also a stated ratio, not derived from M.
 7. **Consistency checks, not confirmations.** The corrected lifespan in Appendix A is within 0.09% of Observer 0's estimate, but the 1052 came from that estimate. The constants in Appendix B return 1 by construction. Both appendices say so.
 8. **Open test.** No second measured value has yet been converted with the same alpha inverse and the same 1052 and compared with Observer 0's own number (Appendix A, line 13.9).
