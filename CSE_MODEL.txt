@@ -250,7 +250,7 @@ NEST 11: Observer Engine (Two Observers Inside the Sphere of Nest 4)
 --------------------------------------------------
 RULES:
 1. Location: Both observers are inside the sphere, at some place, at some moment, within the Root Container (Nest 0).
-2. Observer 0: Observes and measures from its own place and moment. Observer 0 is a role: there can be an Observer 0 at any location (Rule 9).
+2. Observer 0: Observes and measures from its own place and moment. Observer 0 is a role: there can be an Observer 0 at any location (Rule 9). The local values at its own place are found by Observer 0, by measurement.
 3. Hidden Substrate: Observer 0 cannot see the substrate directly: the positions, the transitions, the two arcs, the poles and P (Section 1).
 4. Lag: What Observer 0 sees reaches it late.
 5. Ambiguities: Because of Rules 3 and 4, the measurements of Observer 0 create ambiguities for it. One of them: Observer 0 may read the expansion of the energy as a stretching of space itself. The positions do not stretch.
