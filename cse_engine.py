@@ -1,21 +1,35 @@
 #!/usr/bin/env python3
 """
-cse_engine.py - Canonical Substrate Engine (CSE) v1.3
+cse_engine.py - Canonical Substrate Engine (CSE) v1.6
 A Deterministic Cosmological Logic Model, in executable form.
 
-This file computes only what the model defines with a number or a formula:
-  Header + Nest 0 : the closed cycle of 4,294,967,296 counted operations, and the tick
+This file computes only what the model defines with a number or a formula.
+
+SECTION 1, SUBSTRATE (counts only)
+  Global definitions + Nest 0 : the closed cycle of 4,294,967,296 counted operations, and the tick
   Nest 1 + Nest 3 : bound / free energy at a position
-  Nest 2          : phase (arc), time points 0, 1, 2, and the total runtime in ticks
-  Nest 4          : radius and poles
-  Nest 5          : dense matter pocket / void test (Rules 2, 4, 5), turn lag (Rule 15)
-  Nest 8          : the master chain (Rule 6) and the tier ratio (Rule 12)
-  Appendix A      : the second chain, ticks <-> Observer 0 years (Order A, Order B)
-  Appendix B      : the constants in substrate units, dilation in built units
+  Nest 2          : phase (arc), time points 0, 1, 2, the total runtime, the tick count (Rule 10)
+  Nest 4          : radius, poles, and the constant velocity of the shell (Rule 10)
+  Nest 5          : dense matter pocket / void test (Rules 2, 4, 5), turn lag (Rule 15),
+                    room for gravity (Rule 16)
+  Nest 7          : the unit steps, the constants and the mass unit, each exactly 1
+
+SECTION 2, CONVERSION BRIDGE (rates and ratios)
+  Nest 9          : the master chain (Rule 3) and the derived examples (Rule 7)
+  Nest 10         : dilation in built units (Rule 3), ticks <-> Observer 0 years (Rules 4 and 5),
+                    the whole-sphere position (Rule 7), the tier ratio (Rule 8)
+
+SECTION 3, OBSERVER 0 (inputs and readings)
+  Block A         : the inputs
+  Block B         : the second-chain results (Order A, Order B)
+  Block C         : the constants in substrate units
+
+The command appendix_a keeps its name from earlier versions. It now returns the
+results of Block B.
 
 Every function is a direct formula. No loop over the cycle is needed.
 
-The engine prints full arithmetic values. Appendix A shows the same values
+The engine prints full arithmetic values. Block B shows the same values
 cut at the certainty limit of alpha inverse.
 
 Use as a tool:
@@ -24,6 +38,7 @@ Use as a tool:
   python3 cse_engine.py position 1000
   python3 cse_engine.py local 0.75 1000
   python3 cse_engine.py lag 1000
+  python3 cse_engine.py room 1000
   python3 cse_engine.py order_a 13.8e9
   python3 cse_engine.py order_b 4294967295
   python3 cse_engine.py appendix_a
@@ -40,7 +55,7 @@ import math
 from fractions import Fraction
 
 # --------------------------------------------------
-# HEADER: GLOBAL DEFINITIONS & COUNTING CONVENTIONS
+# SECTION 1: GLOBAL DEFINITIONS & COUNTING CONVENTIONS
 # --------------------------------------------------
 M = 2**31 - 1                 # LIMIT: 2,147,483,647
 POSITIONS = 2**31             # positions 0 to M
@@ -49,39 +64,45 @@ TICK_COUNT = 2**32 - 1        # highest value of the runtime counter (Nest 2, Ru
 TRANSITION_COUNT = 2**32 - 2  # the 2 reversals are not transitions
 
 # --------------------------------------------------
-# NEST 8: SUBSTRATE CONSTANTS, WRITTEN IN HUMAN UNITS
+# SECTION 3, BLOCK A: INPUTS 4 TO 6 (c, h-bar and G in human units)
+# They are placed here because the master chain is built from them.
 # --------------------------------------------------
-HBAR = 1.054571817e-34        # joule seconds
-C = 299792458.0               # meters per second
-G = 6.67430e-11               # m^3 / (kg s^2)
+C = 299792458.0               # input 4: meters per second (exact by definition)
+HBAR = 1.054571817e-34        # input 5: joule seconds (exact by definition)
+G = 6.674e-11                 # input 6: m^3 / (kg s^2) (measured, certain to 4 digits)
 
-# Master chain (Rule 6). Each link uses the link before it.
+# --------------------------------------------------
+# SECTION 2, NEST 9: THE MASTER CHAIN (RULE 3)
+# Each link uses the link before it.
+# --------------------------------------------------
 METERS_PER_POSITION = math.sqrt(HBAR * G / C**3)        # Link 1 (space)
 SECONDS_PER_TRANSITION = METERS_PER_POSITION / C        # Link 2 (time)
 JOULES_PER_ENERGY_UNIT = HBAR / SECONDS_PER_TRANSITION  # Link 3 (energy)
 
 # --------------------------------------------------
-# APPENDIX A: THE SECOND CHAIN (POSTULATES)
+# SECTION 2, NEST 10: THE SECOND CHAIN
 # --------------------------------------------------
-ALPHA_INVERSE = 137.035999177   # dilation index (Appendix A, item 2). Shown there as 137.0359991...
-YEARS_PER_TICK = 1052           # conversion ratio: 1 tick = 1052 undilated years (item 3)
-SECONDS_PER_YEAR = 31_557_600   # Nest 8, Rule 12
+ALPHA_INVERSE = 137.035999177   # dilation index (Nest 10, Rule 2). Shown there as 137.0359991...
+YEARS_PER_TICK = 1062           # conversion ratio: 1 tick = 1062 undilated years (Nest 10, Rule 4)
+SECONDS_PER_YEAR = 31_557_600   # Nest 10, Rule 8
 
-# Appendix A inputs. Observer 0 estimates, taken as given.
-CURRENT_AGE_YEARS = 13.8e9          # input 5
-LIFESPAN_YEARS = 33.0e9             # input 6
-EXPANSION_ENDS_IN_YEARS = 11.0e9    # line 14.4
+# Section 3, Block A: inputs 1 to 3. Observer 0 estimates, taken as given.
+CURRENT_AGE_YEARS = 13.8e9          # input 1
+LIFESPAN_YEARS = 33.3e9             # input 2
+EXPANSION_ENDS_IN_YEARS = 11.0e9    # input 3
 
 # --------------------------------------------------
-# NEST 8, RULE 12: TIER RATIO
+# SECTION 2, NEST 10, RULES 7 AND 8: WHOLE-SPHERE POSITION AND TIER RATIO
 # --------------------------------------------------
 UNDILATED_SECONDS_PER_TICK = YEARS_PER_TICK * SECONDS_PER_YEAR
 UNDILATED_SECONDS_PER_TRANSITION = SECONDS_PER_TRANSITION * ALPHA_INVERSE
 PLANCK_TIMES_PER_TICK = UNDILATED_SECONDS_PER_TICK / UNDILATED_SECONDS_PER_TRANSITION
+# Rule 7 (postulate): 1 whole-sphere position = the distance light covers in 1 tick.
+LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION = YEARS_PER_TICK / ALPHA_INVERSE
 
 
 # --------------------------------------------------
-# APPENDIX A: ORDER A AND ORDER B
+# SECTION 2, NEST 10, RULE 5: ORDER A AND ORDER B (Nest 8, Rule 6)
 # --------------------------------------------------
 def order_a(dilated_years: float) -> dict:
     """Observer 0 to substrate: dilated years -> undilated years -> ticks."""
@@ -103,18 +124,21 @@ def order_b(ticks: float) -> dict:
     }
 
 
+# --------------------------------------------------
+# SECTION 3, BLOCK B: SECOND-CHAIN RESULTS
+# --------------------------------------------------
 def appendix_a(current_age: float = CURRENT_AGE_YEARS,
                lifespan: float = LIFESPAN_YEARS,
                expansion_ends_in: float = EXPANSION_ENDS_IN_YEARS) -> dict:
-    """Appendix A, items 7 to 14. Subtraction is done in ticks only."""
-    age = order_a(current_age)                              # item 7
-    expected = order_a(lifespan)                            # item 8
-    corrected = order_b(TICK_COUNT)                         # item 9
-    mismatch = order_b(expected["ticks"] - TICK_COUNT)      # item 10
-    remaining = order_b(TICK_COUNT - age["ticks"])          # item 11
-    cse_turn = order_b(2**31)                               # lines 14.1 to 14.3
-    observer_turn = order_a(current_age + expansion_ends_in)  # lines 14.4 to 14.6
-    lag = order_b(observer_turn["ticks"] - 2**31)           # lines 14.7 to 14.9
+    """Block B, rows 1.1 to 1.8 and lines 2.1 to 2.4. Subtraction is done in ticks only (Nest 8, Rule 7)."""
+    age = order_a(current_age)                              # row 1.1
+    expected = order_a(lifespan)                            # row 1.2
+    corrected = order_b(TICK_COUNT)                         # row 1.3
+    mismatch = order_b(expected["ticks"] - TICK_COUNT)      # row 1.4
+    remaining = order_b(TICK_COUNT - age["ticks"])          # row 1.5
+    cse_turn = order_b(2**31)                               # row 1.6
+    observer_turn = order_a(current_age + expansion_ends_in)  # row 1.7
+    lag = order_b(observer_turn["ticks"] - 2**31)           # row 1.8
     return {
         "inputs_taken_as_given": {
             "current_age_years": current_age,
@@ -126,24 +150,24 @@ def appendix_a(current_age: float = CURRENT_AGE_YEARS,
         "corrected_lifespan": corrected,
         "mismatch": mismatch,
         "remaining": remaining,
-        "percent_of_runtime": {                             # item 12
+        "percent_of_runtime": {                             # lines 2.1 and 2.2
             "remaining": remaining["ticks"] / TICK_COUNT * 100,
             "current": age["ticks"] / TICK_COUNT * 100,
         },
-        "origin_of_1052": lifespan * ALPHA_INVERSE / TICK_COUNT,  # line 13.4
-        "turning_point": {                                  # item 14
+        "origin_of_1062": lifespan * ALPHA_INVERSE / TICK_COUNT,  # line 3.4
+        "turning_point": {                                  # rows 1.6 to 1.8, lines 2.3 and 2.4
             "cse_turn_of_the_shell": cse_turn,
             "observer_0_turning_point": observer_turn,
             "lag": lag,
             "lag_percent_of_runtime": lag["ticks"] / TICK_COUNT * 100,
             "observer_0_percent_of_runtime": observer_turn["ticks"] / TICK_COUNT * 100,
-            "status": "fitted from the Observer 0 input, not derived (line 14.11)",
+            "status": "fitted from the Observer 0 input, not derived (Block B, line 3.11)",
         },
     }
 
 
 # --------------------------------------------------
-# APPENDIX B: DILATION IN BUILT UNITS (ITEM 5)
+# SECTION 2, NEST 10, RULE 3: DILATION IN BUILT UNITS
 # --------------------------------------------------
 def undilate(value: float, seconds_power: int) -> float:
     """Dilated value -> undilated value, by the power of seconds in the unit.
@@ -156,7 +180,7 @@ def undilate(value: float, seconds_power: int) -> float:
 
 
 # --------------------------------------------------
-# NEST 0: THE CYCLE
+# SECTION 1, NEST 0: THE CYCLE
 # --------------------------------------------------
 def _state(op: int, m: int) -> dict:
     """State after counted operation number `op` (1, 2, 3, ...), for limit m.
@@ -168,7 +192,7 @@ def _state(op: int, m: int) -> dict:
       op m+3 .. 2m+2  : m decrements         (Phase 2)
     The loop is closed: op 2m+3 is op 1 of the next cycle.
 
-    Tick (Header, TICK): the runtime counter is at 0 at op 1 and advances
+    Tick (Global definitions, TICK; Nest 2, Rule 10): the runtime counter is at 0 at op 1 and advances
     once for each later counted operation. Its highest value is 2m+1.
     """
     if not isinstance(op, int) or isinstance(op, bool) or op < 1:
@@ -238,8 +262,8 @@ def _state(op: int, m: int) -> dict:
 def state(op: int) -> dict:
     """State of the model after counted operation `op`, with Observer 0 units.
 
-    planck_tier       : the master chain (Nest 8, Rule 6).
-    whole_sphere_tier : the second chain (Appendix A, Order B), from the tick.
+    planck_tier       : the master chain (Nest 9, Rule 3).
+    whole_sphere_tier : the second chain (Nest 10, Order B), from the tick.
     """
     st = _state(op, M)
     st["observer_0"] = {
@@ -255,7 +279,7 @@ def state(op: int) -> dict:
 
 
 # --------------------------------------------------
-# NEST 1 + NEST 3: ENERGY AT A POSITION
+# SECTION 1, NEST 1 + NEST 3: ENERGY AT A POSITION
 # --------------------------------------------------
 def position(s: int) -> dict:
     """Energy and Observer 0 units at position s (0 to M)."""
@@ -281,7 +305,7 @@ def position(s: int) -> dict:
 
 
 # --------------------------------------------------
-# NEST 5: DENSE MATTER POCKET / VOID
+# SECTION 1, NEST 5: DENSE MATTER POCKET / VOID
 # --------------------------------------------------
 def local(local_bound_fraction: float, s: int) -> dict:
     """Compare a local bound fraction (0 to 1) with the whole-sphere value s / M."""
@@ -306,7 +330,7 @@ def local(local_bound_fraction: float, s: int) -> dict:
 
 
 # --------------------------------------------------
-# NEST 5, RULE 15: TURN LAG
+# SECTION 1, NEST 5, RULE 15: TURN LAG
 # --------------------------------------------------
 def turn_lag(r: int) -> dict:
     """Minimum turn lag for a place at radius r (0 to M) when the shell turns at Pole 1.
@@ -326,7 +350,37 @@ def turn_lag(r: int) -> dict:
 
 
 # --------------------------------------------------
-# TOTALS (Header, Nest 0, Nest 8, Appendix A, Appendix B)
+# SECTION 1, NEST 5, RULE 16: ROOM FOR GRAVITY
+# --------------------------------------------------
+def gravity_room(s: int) -> dict:
+    """Room for gravity when the shell is at position s (0 to M).
+
+    The local bound fraction cannot exceed 1, so the excess is at most the
+    free fraction, 1 - s / M. Counted in gaps of the Nest 3 line, that is M - s.
+    One position from Pole 1 it is exactly 1 gap. At Pole 1 it is 0.
+    """
+    if not isinstance(s, int) or isinstance(s, bool) or not 0 <= s <= M:
+        raise ValueError("position must be a whole number from 0 to 2,147,483,647")
+    return {
+        "position": s,
+        "whole_sphere_value": s / M,
+        "room_gaps": M - s,
+        "room": (M - s) / M,
+        "one_gap": 1 / M,
+    }
+
+
+# --------------------------------------------------
+# A NUMBER AS THE MODEL TEXT SHOWS IT
+# --------------------------------------------------
+def _sci(x: float, digits: int = 4) -> str:
+    """A number as 'm x 10^e', with the given count of significant digits."""
+    mant, exp = f"{x:.{digits - 1}e}".split("e")
+    return f"{mant} x 10^{int(exp)}"
+
+
+# --------------------------------------------------
+# TOTALS (Section 1 counts, both chains, tier ratio, Block C)
 # --------------------------------------------------
 def totals() -> dict:
     mass = JOULES_PER_ENERGY_UNIT / C**2
@@ -338,6 +392,11 @@ def totals() -> dict:
         "tick_count": TICK_COUNT,
         "transition_count": TRANSITION_COUNT,
         "reversals_per_cycle": 2,
+        "tick_count_parts": {                                # Nest 2, Rule 10
+            "arc_1": M,
+            "reversal_at_kernel_s0": 1,
+            "arc_2": M,
+        },
         "master_chain": {
             "meters_per_position": METERS_PER_POSITION,
             "seconds_per_transition": SECONDS_PER_TRANSITION,
@@ -363,13 +422,14 @@ def totals() -> dict:
             "total_runtime_ticks": TICK_COUNT,
             "total_runtime_undilated_years": runtime["undilated_years"],
             "total_runtime_dilated_years": runtime["dilated_years"],
+            "light_years_per_position": LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION,   # Nest 10, Rule 7
         },
         "tier_ratio": {
             "undilated_seconds_per_tick": UNDILATED_SECONDS_PER_TICK,
             "undilated_seconds_per_planck_time": UNDILATED_SECONDS_PER_TRANSITION,
             "planck_times_per_tick": PLANCK_TIMES_PER_TICK,
         },
-        "appendix_b": {
+        "block_c": {
             "c_in_substrate_units": C / (METERS_PER_POSITION / SECONDS_PER_TRANSITION),
             "hbar_in_substrate_units": HBAR / (JOULES_PER_ENERGY_UNIT * SECONDS_PER_TRANSITION),
             "G_in_substrate_units": G / (METERS_PER_POSITION * C**4 / JOULES_PER_ENERGY_UNIT),
@@ -385,7 +445,7 @@ def selftest() -> list[str]:
     """Check the formulas against a step-by-step walk, and check the 32-bit ends."""
     done = []
 
-    # 1. Counts (Header, Nest 0)
+    # 1. Counts (Global definitions, Nest 0)
     assert CYCLE_COUNT == 1 + M + 1 + M == 4_294_967_296
     assert TRANSITION_COUNT == M + M == 4_294_967_294
     assert POSITIONS == M + 1
@@ -409,9 +469,12 @@ def selftest() -> list[str]:
         assert st["bound_units"] + st["free_units"] == m
         assert st["tick"] == k - 1
     assert sum(1 for operation, _ in walk if operation == "P") == 2
+    for k in range(2, 2 * m + 3):                          # Nest 4, Rule 10: constant velocity
+        now, before = _state(k, m), _state(k - 1, m)
+        assert abs(now["position"] - before["position"]) == (0 if now["operation"] == "P" else 1)
     nxt = _state(2 * m + 3, m)
     assert (nxt["cycle"], nxt["op_in_cycle"], nxt["operation"]) == (1, 1, "P")
-    done.append("walk: formulas match a step-by-step loop, 2 reversals, loop closes")
+    done.append("walk: formulas match a step-by-step loop, 1 position per transition, 2 reversals, loop closes")
 
     # 3. The 32-bit kernel states (Nest 0)
     checks = [
@@ -435,59 +498,86 @@ def selftest() -> list[str]:
         assert st["bound_units"] + st["free_units"] == M
     done.append("conservation: bound + free = M at every tested operation")
 
-    # 5. Ticks (Header, TICK; Nest 2, Rule 9)
+    # 5. Nest 7, Rule 3 and Nest 9, Rule 1: the three constants are rebuilt from the three steps
+    L, T, E = METERS_PER_POSITION, SECONDS_PER_TRANSITION, JOULES_PER_ENERGY_UNIT
+    assert math.isclose(L / T, C, rel_tol=1e-12)
+    assert math.isclose(E * T, HBAR, rel_tol=1e-12)
+    assert math.isclose(L * C**4 / E, G, rel_tol=1e-12)
+    done.append("constants: c, hbar and G rebuilt from the three steps (Nest 7, Rule 3)")
+
+    # 6. Ticks (Global definitions, TICK; Nest 2, Rules 9 and 10)
     assert TICK_COUNT == CYCLE_COUNT - 1 == TRANSITION_COUNT + 1 == 4_294_967_295
+    assert TICK_COUNT == M + 1 + M == sum(totals()["tick_count_parts"].values())
     assert state(1)["tick"] == 0
+    assert state(M + 1)["tick"] == M              # the end of Arc 1
     assert state(M + 2)["tick"] == 2**31          # the reversal at [Kernel-S0]
     assert state(CYCLE_COUNT)["tick"] == TICK_COUNT
     assert state(CYCLE_COUNT + 1)["tick"] == 0    # the counter returns to 0
     done.append("ticks: counter runs 0 to 4,294,967,295 and returns to 0")
 
-    # 6. Appendix A, against the values printed in the model text
+    # 7. Block B, against the values printed in the model text
     a = appendix_a()
-    assert int(a["current_age"]["ticks"]) == 1_797_620_521                      # 7.3
-    assert round(a["expected_lifespan"]["ticks"], -1) == 4_298_657_770          # 8.3
-    assert a["corrected_lifespan"]["undilated_years"] == 4_518_305_594_340      # 9.2
-    assert round(a["corrected_lifespan"]["dilated_years"], -2) == 32_971_668_900  # 9.3
-    assert round(a["mismatch"]["ticks"], -1) == 3_690_470                       # 10.1
-    assert round(a["mismatch"]["dilated_years"], -2) == 28_331_100              # 10.3
-    assert int(a["remaining"]["ticks"]) == 2_497_346_773                        # 11.1
-    assert round(a["remaining"]["dilated_years"], -2) == 19_171_668_900         # 11.3
-    assert abs(a["percent_of_runtime"]["current"] - 41.8541143) < 1e-7          # 12.2
-    assert abs(a["percent_of_runtime"]["remaining"] - 58.1458856) < 1e-7        # 12.1
-    assert abs(a["origin_of_1052"] - 1052.903936) < 1e-6                        # 13.4
-    assert int(a["origin_of_1052"]) == YEARS_PER_TICK
+    assert int(a["current_age"]["ticks"]) == 1_780_693_774                      # row 1.1
+    assert round(a["expected_lifespan"]["ticks"], -1) == 4_296_891_500          # row 1.2
+    assert a["corrected_lifespan"]["undilated_years"] == 4_561_255_267_290      # row 1.3
+    assert round(a["corrected_lifespan"]["dilated_years"], -2) == 33_285_087_800  # row 1.3
+    assert round(a["mismatch"]["ticks"], -1) == 1_924_200                       # row 1.4
+    assert round(a["mismatch"]["dilated_years"], -2) == 14_912_200              # row 1.4
+    assert int(a["remaining"]["ticks"]) == 2_514_273_520                        # row 1.5
+    assert round(a["remaining"]["dilated_years"], -2) == 19_485_087_800         # row 1.5
+    assert abs(a["percent_of_runtime"]["current"] - 41.4600077) < 1e-7          # line 2.2
+    assert abs(a["percent_of_runtime"]["remaining"] - 58.5399922) < 1e-7        # line 2.1
+    assert abs(a["origin_of_1062"] - 1062.475790) < 1e-6                        # line 3.4
+    assert int(a["origin_of_1062"]) == YEARS_PER_TICK
     t = a["turning_point"]
-    assert t["cse_turn_of_the_shell"]["undilated_years"] == 2_259_152_797_696   # 14.2
-    assert round(t["cse_turn_of_the_shell"]["dilated_years"], -1) == 16_485_834_460  # 14.3
-    assert round(t["observer_0_turning_point"]["ticks"], -1) == 3_230_506_440   # 14.6
-    assert round(t["lag"]["ticks"], -2) == 1_083_022_800                        # 14.7
-    assert round(t["lag"]["dilated_years"], -1) == 8_314_165_540                # 14.9
-    assert abs(t["lag_percent_of_runtime"] - 25.216089) < 1e-6                  # 14.10
-    done.append("appendix A: items 7 to 14 match the model text")
+    assert t["cse_turn_of_the_shell"]["undilated_years"] == 2_280_627_634_176   # row 1.6
+    assert round(t["cse_turn_of_the_shell"]["dilated_years"], -1) == 16_642_543_910  # row 1.6
+    assert round(t["observer_0_turning_point"]["ticks"], -1) == 3_200_087_360   # row 1.7
+    assert round(t["lag"]["ticks"], -1) == 1_052_603_720                        # row 1.8
+    assert round(t["lag"]["dilated_years"], -1) == 8_157_456_090                # row 1.8
+    assert abs(t["lag_percent_of_runtime"] - 24.507840) < 1e-6                  # line 2.3
+    assert abs(t["observer_0_percent_of_runtime"] - 74.507840) < 1e-6           # line 2.4
+    done.append("block B: rows 1.1 to 1.8 and lines 2.1 to 2.4 match the model text")
 
-    # 7. Order A and Order B return the same numbers (Appendix A, line 13.5)
-    for years in (1.0, 13.8e9, 33.0e9):
+    # 8. Order A and Order B return the same numbers (Block B, line 3.5)
+    for years in (1.0, 13.8e9, 33.3e9):
         back = order_b(order_a(years)["ticks"])["dilated_years"]
         assert abs(back - years) <= years * 1e-12
     done.append("orders: Order A then Order B returns the starting value")
 
-    # 8. Tier ratio (Nest 8, Rule 12)
-    assert UNDILATED_SECONDS_PER_TICK == 33_198_595_200
-    assert 4.493e51 < PLANCK_TIMES_PER_TICK < 4.495e51
-    done.append("tier ratio: one tick is about 4.494e51 Planck times")
+    # 9. Whole-sphere position and tier ratio (Nest 10, Rules 7 and 8)
+    assert UNDILATED_SECONDS_PER_TICK == 33_514_171_200
+    assert 4.535e51 < PLANCK_TIMES_PER_TICK < 4.537e51
+    assert abs(LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION - 7.749788) < 1e-6
+    done.append("tier ratio: one tick is about 4.536e51 Planck times")
 
-    # 9. Appendix B: the constants return 1 by construction
-    b = totals()["appendix_b"]
+    # 10. Block C: the constants return 1 by construction
+    b = totals()["block_c"]
     for name in ("c_in_substrate_units", "hbar_in_substrate_units", "G_in_substrate_units"):
         assert abs(b[name] - 1) < 1e-12
-    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26         # item 12
-    done.append("appendix B: c, h-bar and G are 1 in substrate units")
+    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26         # line 2
+    done.append("block C: c, h-bar and G are 1 in substrate units")
 
-    # 10. Turn lag (Nest 5, Rule 15)
+    # 11. Turn lag (Nest 5, Rule 15)
     assert turn_lag(M)["minimum_lag_transitions"] == 0
     assert turn_lag(0)["minimum_lag_transitions"] == M
     done.append("turn lag: 0 at the shell, M at Pole 0")
+
+    # 12. Master chain, against the values printed in the model text (Nest 9, Rules 3 and 7)
+    mass = E / C**2
+    assert (_sci(L), _sci(T), _sci(E)) == ("1.616 x 10^-35", "5.391 x 10^-44", "1.956 x 10^9")
+    assert _sci(mass) == "2.176 x 10^-8"
+    assert _sci(E / L) == "1.210 x 10^44"
+    assert _sci(E / T) == "3.628 x 10^52"
+    assert _sci(mass / L**3) == "5.155 x 10^96"
+    assert math.isclose(HBAR * C / mass**2, G, rel_tol=1e-12)    # the mass unit (Nest 7, Rule 4)
+    done.append("master chain: the 3 links and the derived examples match the model text")
+
+    # 13. Room for gravity (Nest 5, Rule 16)
+    assert gravity_room(0)["room_gaps"] == M
+    assert gravity_room(M - 1)["room_gaps"] == 1
+    assert gravity_room(M)["room_gaps"] == 0
+    done.append("room for gravity: M gaps at Pole 0, 1 gap one position from Pole 1, 0 at Pole 1")
 
     return done
 
@@ -500,7 +590,7 @@ def _show(data) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.3")
+    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.6")
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("state", help="state after counted operation OP (1 or larger)")
     p.add_argument("op", type=int)
@@ -511,11 +601,13 @@ def main() -> None:
     p.add_argument("s", type=int)
     p = sub.add_parser("lag", help="minimum turn lag for a place at radius R (0 to 2147483647)")
     p.add_argument("r", type=int)
+    p = sub.add_parser("room", help="room for gravity when the shell is at position S (0 to 2147483647)")
+    p.add_argument("s", type=int)
     p = sub.add_parser("order_a", help="Observer 0 dilated YEARS -> undilated years -> ticks")
     p.add_argument("years", type=float)
     p = sub.add_parser("order_b", help="TICKS -> undilated years -> Observer 0 dilated years")
     p.add_argument("ticks", type=float)
-    sub.add_parser("appendix_a", help="Appendix A, items 7 to 14")
+    sub.add_parser("appendix_a", help="Block B: the second-chain results")
     sub.add_parser("totals", help="counts, both chains, tier ratio, constants")
     sub.add_parser("selftest", help="check the engine against the model")
     args = parser.parse_args()
@@ -528,6 +620,8 @@ def main() -> None:
         _show(local(args.v, args.s))
     elif args.command == "lag":
         _show(turn_lag(args.r))
+    elif args.command == "room":
+        _show(gravity_room(args.s))
     elif args.command == "order_a":
         _show(order_a(args.years))
     elif args.command == "order_b":
