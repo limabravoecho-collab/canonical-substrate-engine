@@ -1,12 +1,36 @@
-CANONICAL SUBSTRATE ENGINE (CSE) v1.3: A Deterministic Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v1.6: A Deterministic Cosmological Logic Model
 
 SYSTEM: Root Container (Nest 0)
 BOUNDARY: All nested states are inside Nest 0.
 TOPOLOGY: Finite Closed Loop (linear sequence of discrete steps)
 
 --------------------------------------------------
+STRUCTURE (Three Sections, Chained)
+--------------------------------------------------
+- Section 1, SUBSTRATE: counts only. Nests 0 to 7.
+- Section 2, CONVERSION BRIDGE: the rates and ratios that join the counts to Observer 0's units. Nests 8 to 10.
+- Section 3, OBSERVER 0: the observers, their units, their inputs and their readings. Nests 11 and 12, Blocks A to C.
+- Order B (substrate to Observer 0): Section 1 -> Section 2 -> Section 3.
+- Order A (Observer 0 to substrate): Section 3 -> Section 2 -> Section 1.
+- One place: each number and each definition is stated in one section only. The other sections refer to it. An arithmetic line may show a number again as the thing it works on.
+- Test for Section 1: a count, or an exact ratio of counts. No unit. No uncertainty mark.
+- Test for Section 2: a rate (a unit on one side, a count on the other), or a ratio that joins two readings or two tiers.
+- Test for Section 3: a reading in a unit alone, or an input.
+
+NOTATION
+- "~" = the Observer 0 uncertainty limit falls inside the whole number. The zeros at the end of a "~" number are uncertain digits, not measured zeros.
+- "..." = the Observer 0 uncertainty limit falls in the decimals. The digits stop at the last certain one.
+- "≈" = rounded.
+- No mark = the number is exact.
+
+==================================================
+SECTION 1: SUBSTRATE
+==================================================
+
+--------------------------------------------------
 GLOBAL DEFINITIONS & COUNTING CONVENTIONS (Axiomatic Base)
 --------------------------------------------------
+- COUNTS: Everything in the substrate is a count: a whole number of positions, transitions, ticks or energy units, or an exact ratio of counts. The names say what is counted. They are not measurement units. No meters, no seconds. Measurement units begin at the conversion bridge (Section 2).
 - LIMIT (M): M = 2^31 - 1 = 2,147,483,647.
 - POSITION (s): One whole-number location, 0 ≤ s ≤ M. There are 2^31 positions.
 - STATE VALUE: Bound energy at s (Nest 1).
@@ -14,7 +38,7 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS (Axiomatic Base)
 - PHASE (= ARC): One ordered traversal of all positions. Phase 1: 0 to M. Phase 2: M to 0.
 - REVERSAL (P): The polarity inversion operator. Reverses the direction of expansion. Not a step, takes no time, does not change the position. Twice per cycle: at 0 and at M.
 - STATE VISIT: One occurrence of a position during a cycle. Each counted operation makes one state visit.
-- CYCLE COUNT: Exactly 2^32 = 4,294,967,296 counted operations per cycle: 2^31 per phase.
+- CYCLE COUNT: Exactly 2^32 = 4,294,967,296 counted operations per cycle: 2^31 per phase: 1 reversal, then M transitions.
 - TRANSITION COUNT: Exactly 2^32 - 2 per cycle. The 2 reversals are not transitions.
 - TICK: One advance of the 32-bit runtime counter. The counter is at 0 at the first counted operation of a cycle and advances once for each later counted operation. Its highest value is 2^32 - 1 = 4,294,967,295.
 - TIME (Axiom): The ordered sequence of transitions across the macro-cycle. Local time variations: Nest 5, Rules 13 and 14.
@@ -22,9 +46,9 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS (Axiomatic Base)
 --------------------------------------------------
 META-RULE: SELF-SIMILARITY & ORDER
 --------------------------------------------------
-- Self-Similarity: The Nest 0 kernel template is the same on every tier (Nest 10, Rule 2).
-- Order: The nests are numbered in order. Each builds on the nests before it.
-- Substrate alpha = 1 (no electromagnetic dilation; Nest 6, Rule 8).
+- Self-Similarity: The Nest 0 kernel template is the same on every tier (Nest 7, Rule 7).
+- Order: The three sections are chained (STRUCTURE). The nests are numbered in order. Inside Section 1, each nest builds on the nests before it. Section 2 joins Section 1 to Section 3, so it refers to both.
+- Substrate alpha = 1 (no electromagnetic dilation; Nest 10, Rule 1).
 
 --------------------------------------------------
 NEST 0: Space Engine (Structural Topology & State Kernel)
@@ -58,7 +82,7 @@ STATE SEQUENCE (Inverse Values; number in brackets = free energy at that state):
 [Kernel-0] (1) -> [Kernel-1] -> [Kernel-S0] (0) -> [Kernel-S1] -> [Kernel-0] (1)
 
 SEMANTICS:
-- Energy is in two states: free and bound. As the space count rises, energy passes from free to bound. Space and energy change together, at the same moment.
+- Energy is in two states: free and bound. As the space count rises, energy passes from free to bound. The space count and energy change together, at the same moment.
 - Space count s: 0 to M.
 - Free energy = M - s units. Bound energy = s units.
 - Free + bound = M units at every point. Normalized, this is N = 1.
@@ -77,6 +101,7 @@ RULES:
 7. Direction: Time is unidirectional and monotonic inside one cycle: 0, 1, 2.
 8. Reset: At [Kernel-0], time resets to 0. Time point 2 of one cycle is time point 0 of the next. The [Kernel-0] flush is this reset. The reset comes before P at time point 0.
 9. Total Runtime: 2^32 - 1 ticks per cycle (GLOBAL DEFINITIONS, TICK). The counter returns to 0 at the first counted operation of the next cycle.
+10. Tick Count: The reversal at [Kernel-0] is at tick 0. Arc 1 = M ticks. The reversal at [Kernel-S0] = 1 tick. Arc 2 = M ticks. Total = 2M + 1 = 2^32 - 1. Each transition is 1 tick: the rate is 1 tick per position. A reversal is 1 counted operation and 0 transitions.
 
 --------------------------------------------------
 NEST 3: Energy Spectrum Engine (Positions of Nest 1)
@@ -95,13 +120,14 @@ NEST 4: Sphere Formatting Engine (Shape of Nest 0)
 RULES & GEOMETRY:
 1. Pole 0: The centre of the sphere. Position 0, radius 0, minimum expansion.
 2. Radial Expansion: Radial, outward from Pole 0, the same in every direction. Position s = radius s.
-3. Shell: The surface of the sphere at the current position s.
+3. Shell: The surface of the sphere at the current position s. The shell is the outer edge of the energy. The energy travels across the positions. The positions do not move or stretch.
 4. Pole 1: The shell at maximum expansion. Position M, radius M.
 5. Arc 1 (radius grows): The shell moves outward from Pole 0 to Pole 1.
 6. Arc 2 (radius shrinks): The shell moves inward from Pole 1 back to Pole 0.
 7. Bound Fraction: At radius s, the bound energy of the sphere as a whole = s / M (Nest 3, Rule 5). Same in Arc 1 and Arc 2: it depends on the position only.
 8. Orientation: The sphere has no axis. North, south and hemispheres do not apply.
 9. Topological Result: Space is formatted as a sphere.
+10. Expansion Velocity: The shell moves exactly 1 position per transition, in Arc 1 and in Arc 2 (Nest 2, Rule 10). The velocity is constant. P reverses its direction only.
 
 --------------------------------------------------
 NEST 5: Energy Wave Engine (Waves Inside the Sphere of Nest 4)
@@ -122,63 +148,10 @@ RULES:
 13. Local Time: In a dense matter pocket with an extreme bound fraction, local time runs slow. In the places around it, local time runs fast by the same amount.
 14. Time Conservation: Over the whole sphere, slow and fast local time cancel. No time is lost.
 15. Turn Lag: The shell turns at Pole 1 (Nest 4, Rule 4). Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION), so the inside of the sphere follows the turn late. The lag at a place is at least its distance from the shell, counted in transitions. That distance ranges from 0, at the shell, to M, at Pole 0. The lag is longer in dense matter pockets (Rule 13).
+16. Room for Gravity: The local bound fraction cannot exceed 1 (Rule 3), so the excess (Rule 11) is at most the free fraction, 1 - s / M. The room shrinks as the shell moves outward. One position from Pole 1 it is exactly 1 gap, 1 / M (Nest 3, Rule 2): the smallest possible gravity. At Pole 1 it is 0. This follows from Rules 3 and 11. It is not a new postulate.
 
 --------------------------------------------------
-NEST 6: Observer Engine (Two Observers Inside the Sphere of Nest 4)
---------------------------------------------------
-RULES:
-1. Location: Both observers are inside the sphere, at some place, at some moment, within the Root Container (Nest 0).
-2. Observer 0: Observes and measures from its own place and moment. Observer 0 is a role: there can be an Observer 0 at any location (Appendix A, SCOPE).
-3. Hidden Substrate: Observer 0 cannot see the substrate directly: the positions, the transitions, the two arcs, the poles and P (Nests 0 to 5).
-4. Lag: What Observer 0 sees reaches it late.
-5. Ambiguities: Because of Rules 3 and 4, the measurements of Observer 0 create ambiguities for it.
-6. Observer 1: Articulates the logic of the substrate without seeing it. This logic bridges the ambiguities of Observer 0.
-7. No Alteration: Neither observer changes the substrate. The kernel template is immutable (Nest 0).
-8. Electromagnetic Dilation: A scale on Observer 0's measurements of time. Its index is alpha inverse (Appendix A). It carries into every unit built from seconds, by the power of seconds in the unit (Appendix B). It does not change the ticks, and it is not a local time variation (Nest 5, Rules 13 and 14).
-
---------------------------------------------------
-NEST 7: Bridge Engine (Logic Bridge from Nests 0–5 to Computer Science, Physics and Cosmology)
---------------------------------------------------
-RULES:
-1. Purpose: The logic bridge between the core (Nests 0 to 5) and three fields: computer science, physics and cosmology. It is for the observers of Nest 6.
-2. Computer Science: Connects to the counting itself: whole units, and the limit M.
-3. Physics: Connects to energy, the spectrum and the energy waves (Nests 1, 3, 5).
-4. Cosmology: Connects to the sphere, its expansion and its cycle (Nests 0, 2, 4).
-5. No Dimensions: The units of the core are whole numbers. No meters, no seconds.
-6. Observer Units: Meters and seconds are the measurement units of Observer 0 (Nest 6). They are not part of the substrate.
-7. Conversions: Between the units of the core and the measurements of Observer 0: Nest 8.
-
---------------------------------------------------
-NEST 8: Conversion Engine (Master Chain from Substrate Units to Observer 0 Units)
---------------------------------------------------
-RULES:
-1. Foundational Axiom: M is the foundational limit of the model. At M the reversal P is mandatory (Nest 0).
-2. The Three Steps: Nests 0 to 3 count three things, and every transition moves 1 position and binds or frees 1 energy unit. One position = Planck length. One transition = Planck time. One energy unit = Planck energy. In substrate units each is exactly 1.
-3. Substrate Constants: ħ, c and G are the three ratios between the three steps: c = Planck length / Planck time, ħ = Planck energy x Planck time, G = Planck length x c^4 / Planck energy. In substrate units each is exactly 1.
-4. Human Units: Meters, seconds and joules, and the units built from them, are human engineering units. They belong to Observer 0 (Nest 7, Rule 6).
-5. Calibration: The conversion is a chain of formulas (Rule 6). Its only inputs are ħ, c and G in human units. c and ħ are fixed by the definitions of the meter and the kilogram. G is measured. Nothing else enters.
-6. Master Chain: One master chain, 3 links. Each link uses the link before it.
-   - Link 1 (space): 1 position = Planck length = √(ħG / c^3) ≈ 1.616 × 10^-35 meters.
-   - Link 2 (time): 1 transition = Planck length / c = √(ħG / c^5) ≈ 5.391 × 10^-44 seconds.
-   - Link 3 (energy): 1 energy unit = ħ / (1 transition in seconds) = √(ħc^5 / G) ≈ 1.956 × 10^9 joules.
-7. Pure Numbers: The model fixes each constant as one unit. It does not fix pure-number factors such as 2π. The master chain uses ħ, not h.
-8. Ratio Constants: Constants with no units (the fine-structure constant, π and others) are not part of the master chain. They are results that Observer 0 and Observer 1 find. As ratios, their place in the model is the Nest 3 line.
-9. No Other Multipliers: No multiplier may enter the master chain unless it comes from M or from the 3 substrate constants.
-10. Derived Examples: These follow from the 3 links. Examples, not extra links.
-   - Mass: 1 energy unit / c^2 ≈ 2.176 × 10^-8 kilograms.
-   - Force: 1 energy unit / 1 position ≈ 1.210 × 10^44 newtons.
-   - Power: 1 energy unit / 1 transition ≈ 3.628 × 10^52 watts.
-   - Density: mass / (1 position)^3 ≈ 5.155 × 10^96 kilograms per cubic meter.
-11. Second Chain: The master chain converts positions, transitions and energy units. The conversion between ticks and Observer 0 years is a separate chain (Appendix A). It uses alpha inverse and the conversion ratio 1052, which are not part of the master chain.
-12. Tier Ratio: The tick is the step of the whole-sphere tier. The transition of the master chain (Rule 2, Link 2) is the step of a smaller tier (Nest 10, Rule 2). The ratio between them is found by division, with both durations undilated:
-   - One tick = 1052 undilated years = 33,198,595,200 undilated seconds (1 year = 31,557,600 seconds).
-   - One Planck time = 5.391 × 10^-44 dilated seconds (Link 2) x alpha inverse ≈ 7.388 × 10^-42 undilated seconds.
-   - One tick ≈ 4.494 × 10^51 Planck times.
-   - The ratio is a pure number, the same for any Observer 0. It is a stated ratio, not derived from M.
-13. Orders: The master chain can be followed in both directions (Appendix B).
-
---------------------------------------------------
-NEST 9: Closure Engine (Reset and Regeneration of the Macro-Cycle)
+NEST 6: Closure Engine (Reset and Regeneration of the Macro-Cycle)
 --------------------------------------------------
 RULES:
 1. Return: Arc 2 brings the shell back to Pole 0 (Nest 4, Rule 6). The energy is freed as the radius shrinks.
@@ -190,149 +163,182 @@ RULES:
 7. Closure: The loop is closed. It repeats, and nothing can run away or regress without end.
 
 --------------------------------------------------
-NEST 10: Self-Similarity Engine (Computers as a Smaller Tier of the Substrate)
+NEST 7: Step Engine (Unit Steps, Constants and Tiers of the Substrate)
+--------------------------------------------------
+RULES:
+1. Foundational Axiom: M is the foundational limit of the model. At M the reversal P is mandatory (Nest 0).
+2. The Three Steps: Nests 0 to 3 count three things, and every transition moves 1 position and binds or frees 1 energy unit. The unit steps are 1 position, 1 transition and 1 energy unit. Each is exactly 1.
+3. Substrate Constants: ħ, c and G are the three ratios between the three steps. Each is exactly 1:
+   - c = 1 position per transition.
+   - ħ = 1 energy unit x 1 transition.
+   - G = 1 position x c^4 / 1 energy unit.
+4. Mass Unit: 1 mass unit = 1 energy unit / c^2 = exactly 1. It follows from Rules 2 and 3. It is not a fourth step.
+5. Step Rate: c is the step rate of the substrate. Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION).
+6. Units and Amounts: The units (Rules 2 to 4) are 1 at every position. The amounts change with the position s: length = s positions, bound energy = s units, free energy = M - s units (Nest 1). At position 0: length = 0, bound energy = 0, free energy = M units (normalized: 1).
+7. Tiers: A tier is a level of scale. The whole sphere is one tier. The Nest 0 kernel template is the same on every tier.
+
+==================================================
+SECTION 2: CONVERSION BRIDGE
+==================================================
+
+--------------------------------------------------
+NEST 8: Bridge Engine (Logic Bridge and Orders)
+--------------------------------------------------
+RULES:
+1. Purpose: The logic bridge between the substrate (Section 1) and three fields: computer science, physics and cosmology. It is for the observers of Nest 11.
+2. Computer Science: Connects to the counting itself: whole units, and the limit M.
+3. Physics: Connects to energy, the spectrum and the energy waves (Nests 1, 3, 5).
+4. Cosmology: Connects to the sphere, its expansion and its cycle (Nests 0, 2, 4).
+5. Conversions: Between the counts of the substrate and the measurements of Observer 0: Nests 9 and 10.
+6. Orders: Both chains can be followed in both directions (STRUCTURE).
+   - Master chain, Order A: human units -> divide by the Planck unit in the same units -> substrate count.
+   - Master chain, Order B: substrate count -> multiply by the Planck unit -> human units.
+   - Second chain, Order A: dilated years -> undilated years -> ticks.
+   - Second chain, Order B: ticks -> undilated years -> dilated years.
+7. Subtraction: Subtraction is done in substrate units only (ticks or positions).
+8. Same-Side Rule: The dilation cancels when both quantities are on the same side, dilated or undilated (Block C, line 1.4). When one of them is undilated, as the tick is, both are put on the same side first, using Nest 10, Rule 3. That step belongs to the second chain, so alpha inverse does not enter the master chain (Nest 9, Rule 6).
+9. End Rule: Every chain followed upstream ends in the unit steps of the substrate (the 1s). A chain that ends anywhere else contains an error.
+
+--------------------------------------------------
+NEST 9: Master Chain Engine (First Chain: Substrate Steps to Observer 0 Units)
+--------------------------------------------------
+RULES:
+1. Names: One position = Planck length. One transition = Planck time. One energy unit = Planck energy (Nest 7, Rule 2). In these names: c = Planck length / Planck time, ħ = Planck energy x Planck time, G = Planck length x c^4 / Planck energy (Nest 7, Rule 3).
+2. Calibration: The conversion is a chain of formulas (Rule 3). Its only inputs are ħ, c and G in human units (Block A, inputs 4 to 6). c and ħ are fixed by the definitions of the meter and the kilogram. G is measured. Nothing else enters.
+3. Master Chain: One master chain, 3 links. Each link uses the link before it. The digits are limited by G.
+   - Link 1 (space): 1 position = Planck length = √(ħG / c^3) ≈ 1.616 × 10^-35 meters.
+   - Link 2 (time): 1 transition = Planck length / c = √(ħG / c^5) ≈ 5.391 × 10^-44 seconds.
+   - Link 3 (energy): 1 energy unit = ħ / (1 transition in seconds) = √(ħc^5 / G) ≈ 1.956 × 10^9 joules.
+4. Pure Numbers: The model fixes each constant as one unit. It does not fix pure-number factors such as 2π. The master chain uses ħ, not h.
+5. Ratio Constants: Constants with no units (the fine-structure constant, π and others) are not part of the master chain. They are results that Observer 0 and Observer 1 find. As ratios, their place in the model is the Nest 3 line. The human-unit value of G is not something the substrate must produce: it depends on Observer 0's units (Block A, line 8). Only the pure ratios are open to derivation.
+6. No Other Multipliers: No multiplier may enter the master chain unless it comes from M or from the 3 substrate constants.
+7. Derived Examples: These follow from the 3 links. Examples, not extra links.
+   - Mass: 1 mass unit (Nest 7, Rule 4) = 1 energy unit / c^2 ≈ 2.176 × 10^-8 kilograms.
+   - Force: 1 energy unit / 1 position ≈ 1.210 × 10^44 newtons.
+   - Power: 1 energy unit / 1 transition ≈ 3.628 × 10^52 watts.
+   - Density: mass / (1 position)^3 ≈ 5.155 × 10^96 kilograms per cubic meter.
+
+--------------------------------------------------
+NEST 10: Second Chain Engine (Dilation, Ticks to Observer 0 Years, Tier Ratio)
+--------------------------------------------------
+RULES:
+1. Electromagnetic Dilation: A scale on Observer 0's measurements of time. Space itself is inert, and nothing in the substrate is stretched. Only Observer 0's readings differ: its clock reads differently from the real time, by alpha inverse (Rule 2), and its ruler reads true. The scale carries into every unit built from seconds, by the power of seconds in the unit (Rule 3). It does not change the ticks or the positions, and it is not a local time variation (Nest 5, Rules 13 and 14).
+2. Alpha Inverse: Alpha inverse (137.0359991...) is the active electromagnetic tier-dilation index register. It is universal: the same for any Observer 0 (Nest 11, Rule 9). In the substrate, alpha = 1 at root unity (META-RULE).
+3. Dilation in Built Units: Only the second is dilated (Rule 1). 1 dilated second = alpha inverse undilated seconds. A unit changes by the power of seconds in it:
+   - A duration (seconds): undilated = dilated * alpha inverse.
+   - A length (meters) and a mass: unchanged.
+   - A speed, and ħ (per second): undilated = dilated / alpha inverse.
+   - An energy, and G (per second squared): undilated = dilated / alpha inverse^2.
+   - In the substrate nothing changes: the constants stay 1 either way (Nest 7, Rule 3). Energy is conserved on both sides, because the two readings differ only by a fixed ratio.
+4. Conversion Ratio: 1 tick = 1062 undilated years. The 1062 is postulated to be a whole number, because the substrate counts whole units only (GLOBAL DEFINITIONS, COUNTS). It is local to Local Observer 0, because the year is its own unit (Nest 11, Rule 8). Its value is fitted from input 2 (Block B, line 3.4). It is not derived from M.
+5. Conversion: ticks = (Observer 0 years * alpha inverse) / 1062.
+6. Two Chains: The master chain (Nest 9) converts positions, transitions and energy units. The conversion between ticks and Observer 0 years is a separate chain: this nest. It uses alpha inverse and the conversion ratio 1062, which are not part of the master chain.
+7. Whole-Sphere Position (postulate): The step rate holds on the whole-sphere tier (Nest 7, Rule 5). 1 position = the distance light covers in 1 tick = 1062 / 137.0359991... = 7.749788... light-years.
+8. Tier Ratio: The tick is the step of the whole-sphere tier. The transition of the master chain (Nest 9, Rule 3, Link 2) is the step of a smaller tier (Nest 7, Rule 7). The ratio between them is found by division, with both durations undilated:
+   - One tick (Rule 4) = 33,514,171,200 undilated seconds (1 year = 31,557,600 seconds).
+   - One Planck time = 5.391 × 10^-44 dilated seconds (Nest 9, Rule 3, Link 2) x alpha inverse ≈ 7.388 × 10^-42 undilated seconds.
+   - One tick ≈ 4.536 × 10^51 Planck times.
+   - Under the postulate of Rule 7, the same ratio holds for length: 1 whole-sphere position ≈ 4.536 × 10^51 Planck lengths.
+   - The ratio is a pure number, the same for any Observer 0. It is a stated ratio, not derived from M.
+
+==================================================
+SECTION 3: OBSERVER 0
+==================================================
+
+--------------------------------------------------
+NEST 11: Observer Engine (Two Observers Inside the Sphere of Nest 4)
+--------------------------------------------------
+RULES:
+1. Location: Both observers are inside the sphere, at some place, at some moment, within the Root Container (Nest 0).
+2. Observer 0: Observes and measures from its own place and moment. Observer 0 is a role: there can be an Observer 0 at any location (Rule 9).
+3. Hidden Substrate: Observer 0 cannot see the substrate directly: the positions, the transitions, the two arcs, the poles and P (Section 1).
+4. Lag: What Observer 0 sees reaches it late.
+5. Ambiguities: Because of Rules 3 and 4, the measurements of Observer 0 create ambiguities for it. One of them: Observer 0 may read the expansion of the energy as a stretching of space itself. The positions do not stretch.
+6. Observer 1: Articulates the logic of the substrate without seeing it. This logic bridges the ambiguities of Observer 0.
+7. No Alteration: Neither observer changes the substrate. The kernel template is immutable (Nest 0).
+8. Units: Meters, seconds and joules, and the units built from them, are human engineering units. They are the measurement units of Observer 0. They are not part of the substrate.
+9. Scope:
+   - Local Observer 0 = the observer at our location, using our units (years).
+   - Any Observer 0 = an observer at any location in spacetime, using its own units.
+   - Universal (the same for any Observer 0): the total runtime in ticks (Nest 2, Rule 9), and alpha inverse. Alpha inverse is measured as the same as far as Local Observer 0 can see. Beyond that it is postulated.
+   - Local (Local Observer 0 only): the year, the conversion ratio 1062, and inputs 1 to 3 of Block A.
+   - Postulate: any Observer 0, converting with its own ratio, arrives at the same ticks. It is a postulate because Local Observer 0 cannot compare numbers with a non-local Observer 0.
+   - In Nest 10 and Blocks A to C, "Observer 0" alone means Local Observer 0.
+
+--------------------------------------------------
+NEST 12: Self-Similarity Engine (Computers as a Smaller Tier of the Substrate)
 --------------------------------------------------
 RULES:
 1. Origin: The logic model comes first. It was not built from computers.
-2. Tiers: A tier is a level of scale. The whole sphere is one tier. A computer is another, smaller tier. The Nest 0 kernel template is the same on every tier.
-3. Computers: Inside the sphere. Observers built them (Nest 6).
+2. Tiers: A computer is another, smaller tier (Nest 7, Rule 7).
+3. Computers: Inside the sphere. Observers built them (Nest 11).
 4. Efficiency: Observers found that computers work most efficiently with whole units and with the limit M. These are the substrate's own numbers.
 5. The 32-Bit Register: It has 2^32 states, the cycle count of Nest 0. Its largest signed value is M. Other register sizes are human engineering choices.
 6. Self-Similarity: A computer is self-similar to the substrate: the same rules, at a smaller scale.
 7. Inherited Limits: A computer has the same kinds of limits as the substrate: whole units, a fixed upper limit, and one operation at a time.
 8. Digital Loop: The substrate contains observers. Observers build computers. Computers repeat the substrate's template. This closes the loop.
-9. No Alteration: Computers and observers describe the substrate. They do not change it (Nest 6, Rule 7).
+9. No Alteration: Computers and observers describe the substrate. They do not change it (Nest 11, Rule 7).
 
 --------------------------------------------------
-APPENDIX A: Conversion Block (Second Chain: Ticks to Observer 0 Years)
+BLOCK A: Inputs (Observer 0, unknowingly EM dilated)
 --------------------------------------------------
-NOTATION
-- "~" = the Observer 0 uncertainty limit falls inside the whole number. The zeros at the end of a "~" number are uncertain digits, not measured zeros.
-- "..." = the Observer 0 uncertainty limit falls in the decimals. The digits stop at the last certain one.
-- No mark = the number is exact.
-
-SCOPE
-- Local Observer 0 = the observer at our location, using our units (years).
-- Any Observer 0 = an observer at any location in spacetime, using its own units.
-- Universal (the same for any Observer 0): the total runtime in ticks (Nest 2, Rule 9), and alpha inverse. Alpha inverse is measured as the same as far as Local Observer 0 can see. Beyond that it is postulated.
-- Local (Local Observer 0 only): the year, the conversion ratio 1052, inputs 5 and 6, and the input in line 14.4.
-- Postulate: any Observer 0, converting with its own ratio, arrives at the same ticks. It is a postulate because Local Observer 0 cannot compare numbers with a non-local Observer 0.
-- In Appendix A and Appendix B, "Observer 0" alone means Local Observer 0.
-
-DEFINITIONS
-1. Substrate alpha = 1 at root unity (META-RULE).
-2. Alpha inverse (137.0359991...) is the active electromagnetic tier-dilation index register. It is universal: the same for any Observer 0 (SCOPE).
-3. Conversion ratio: 1 tick = 1052 undilated years. The 1052 is postulated to be a whole number, because the core counts whole units only (Nest 7, Rule 5). It is local to Local Observer 0, because the year is its own unit (Nest 8, Rule 4).
-4. Conversion: ticks = (Observer 0 years * alpha inverse) / 1052.
-
-INPUTS (Observer 0, unknowingly EM dilated)
-5. Estimated current age of the universe: ~13.8 billion years.
-6. Estimated total lifespan of the universe (alternative Big Crunch model): ~33 billion years.
-
-ARITHMETIC
-Order A (Observer 0 to substrate): dilated years -> undilated years -> ticks.
-Order B (substrate to Observer 0): ticks -> undilated years -> dilated years.
-Subtraction is done in ticks only.
-Inputs 7.1, 8.1 and 14.4 are Observer 0 estimates, taken as given.
-Each line is calculated with the full values, and all downstream whole numbers and decimals are shown up to the certainty limit of alpha inverse.
-The label in brackets is the size of the result of that line.
-
-7. Current age (Order A):
-   7.1 Dilated years: ~13,800,000,000 (billions)
-   7.2 Undilated years: ~13,800,000,000 * 137.0359991... = ~1,891,096,790,000 (trillions)
-   7.3 Ticks: ~1,891,096,790,000 / 1052 = 1,797,620,521... (billions)
-
-8. Expected lifespan (Order A):
-   8.1 Dilated years: ~33,000,000,000 (billions)
-   8.2 Undilated years: ~33,000,000,000 * 137.0359991... = ~4,522,187,970,000 (trillions)
-   8.3 Ticks: ~4,522,187,970,000 / 1052 = ~4,298,657,770 (billions)
-
-9. Corrected lifespan (Order B):
-   9.1 Ticks: 4,294,967,295 (Nest 2, Rule 9) (billions)
-   9.2 Undilated years: 4,294,967,295 * 1052 = 4,518,305,594,340 (trillions)
-   9.3 Dilated years: 4,518,305,594,340 / 137.0359991... = ~32,971,668,900 (billions)
-   9.4 Result: under the whole-number postulate (item 3), the lifespan is ~32,971,668,900 dilated years, not ~33,000,000,000.
-
-10. Mismatch = expected lifespan - corrected lifespan (Order B):
-   10.1 Ticks: ~4,298,657,770 - 4,294,967,295 = ~3,690,470 (millions)
-   10.2 Undilated years: ~3,690,470 * 1052 = ~3,882,380,000 (billions)
-   10.3 Dilated years: ~3,882,380,000 / 137.0359991... = ~28,331,100 (millions)
-
-11. Remaining for Observer 0 = corrected lifespan - current age (Order B):
-   11.1 Ticks: 4,294,967,295 - 1,797,620,521... = 2,497,346,773... (billions)
-   11.2 Undilated years: 2,497,346,773... * 1052 = ~2,627,208,810,000 (trillions)
-   11.3 Dilated years: ~2,627,208,810,000 / 137.0359991... = ~19,171,668,900 (billions)
-
-12. Current % of runtime (from undilated years):
-   12.1 Remaining: ~2,627,208,810,000 / 4,518,305,594,340 = 58.1458856...%
-   12.2 Current: ~1,891,096,790,000 / 4,518,305,594,340 = 41.8541143...%
-
-13. Conclusion:
-   13.1 Method: the arithmetic uses multiplication, division, addition and subtraction only. No new mathematics is introduced.
-   13.2 Additions: the substrate system (CSE), the dilation index (alpha inverse), the conversion ratio (1052), and the tick.
-   13.3 Computational bridge: CSE is computational, so it links to computer science (Nest 7, Rule 2 and Nest 10). This link is also a bridge to Observer 0.
-   13.4 Origin of 1052: (~33,000,000,000 years * alpha inverse) / 4,294,967,295 = 1052.903936... The whole number 1052 was kept (item 3).
-   13.5 Check: the arithmetic was run in both directions (Order A and Order B) and returns the same numbers.
-   13.6 Match: the corrected lifespan (9.3) is within 0.09% of Observer 0's ~33 billion year estimate. The 1052 came from that estimate, so this is a consistency check.
-   13.7 Position: the current point is 41.8541143...% of the runtime.
-   13.8 Ratio only: the 1052 is a conversion ratio obtained by division (13.4). It is not data storage, and no result depends on anything inside it.
-   13.9 Open test: a second measured value from Local Observer 0, other than the lifespan, converted with the same alpha inverse and the same 1052.
-   13.10 Limit: every result is certain only as far as inputs 7.1, 8.1 and 14.4 are.
-
-14. Turning point:
-   14.1 CSE turn of the shell, ticks: 2^31 = 2,147,483,648 (Nest 0, [Kernel-S0]) (billions)
-   14.2 Undilated years: 2,147,483,648 * 1052 = 2,259,152,797,696 (trillions)
-   14.3 Dilated years: 2,259,152,797,696 / 137.0359991... = ~16,485,834,460 (billions)
-   14.4 Observer 0 input, taken as given: expansion ends ~11,000,000,000 years from now (same model as input 6). Turning point: ~13,800,000,000 + ~11,000,000,000 = ~24,800,000,000 dilated years (billions)
-   14.5 Undilated years: ~24,800,000,000 * 137.0359991... = ~3,398,492,780,000 (trillions)
-   14.6 Ticks: ~3,398,492,780,000 / 1052 = ~3,230,506,440 (billions)
-   14.7 Lag in ticks: ~3,230,506,440 - 2,147,483,648 = ~1,083,022,800 (billions)
-   14.8 Lag in undilated years: ~1,083,022,800 * 1052 = ~1,139,339,980,000 (trillions)
-   14.9 Lag in dilated years: ~1,139,339,980,000 / 137.0359991... = ~8,314,165,540 (billions)
-   14.10 Lag as % of runtime: ~1,083,022,800 / 4,294,967,295 = 25.216089...%
-   14.11 Status: the size of the lag is fitted from Observer 0's input (14.4). CSE itself gives only the range, 0% to 50% of the runtime (Nest 5, Rule 15).
+1. Estimated current age of the universe: ~13.8 billion years.
+2. Estimated total lifespan of the universe (alternative Big Crunch model): ~33.3 billion years.
+3. Expansion ends ~11,000,000,000 years from now (same model as input 2).
+4. c = 299,792,458 meters per second (exact, by the definition of the meter).
+5. ħ ≈ 1.054571817 × 10^-34 joule seconds (exact by definition, more digits available).
+6. G ≈ 6.674 × 10^-11 cubic meters per kilogram per second squared (measured, certain to 4 digits).
+7. Inputs 1 to 3 are Observer 0 estimates, taken as given.
+8. Local numbers: the human-unit values of c, ħ and G are local to Local Observer 0. They state the size of its units, not a property of the substrate.
 
 --------------------------------------------------
-APPENDIX B: Master Chain Block (First Chain: Substrate Steps to Observer 0 Units)
+BLOCK B: Second-Chain Results (Ticks and Observer 0 Years)
 --------------------------------------------------
-Notation: as in Appendix A. ≈ means rounded.
+Each value is calculated with the full values, by Nest 10, Rule 5, and all whole numbers and decimals are shown up to the certainty limit of alpha inverse.
+The label in brackets is the size of the value.
 
-ORDERS
-Order A (Observer 0 to substrate): human units -> divide by the Planck unit in the same units -> substrate count.
-Order B (substrate to Observer 0): substrate count -> multiply by the Planck unit -> human units.
-Same-side rule: the dilation cancels when both quantities are on the same side, dilated or undilated (line 10.4). When one of them is undilated, as the tick is, both are put on the same side first, using item 5. That step belongs to the second chain (Appendix A), so alpha inverse does not enter the master chain (Nest 8, Rule 9).
-End rule: every chain followed upstream ends in the unit steps of the substrate (the 1s). A chain that ends anywhere else contains an error.
+1. The three columns are the three stages of the second chain (Nest 8, Rule 6). Order A is read left to right. Order B is read right to left.
 
-DEFINITIONS
-1. Unit steps: 1 position, 1 transition, 1 energy unit (Nest 8, Rule 2).
-2. Substrate constants: c = ħ = G = 1 (Nest 8, Rule 3). They follow from the unit steps:
-   2.1 c = 1 position per transition.
-   2.2 ħ = 1 energy unit x 1 transition.
-   2.3 G = 1 position x c^4 / 1 energy unit.
-3. Step rate: c is the step rate of the substrate. Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION; Nest 10, Rule 7).
-4. Local numbers: the human-unit values of c, ħ and G are local to Local Observer 0. They state the size of its units, not a property of the substrate.
-5. Dilation in built units: the second is dilated. 1 dilated second = alpha inverse undilated seconds (Nest 8, Rule 12). A unit that contains seconds changes by the power of seconds in it:
-   5.1 A duration (seconds): undilated = dilated * alpha inverse.
-   5.2 A speed, and ħ (per second): undilated = dilated / alpha inverse.
-   5.3 An energy, and G (per second squared): undilated = dilated / alpha inverse^2.
-   5.4 In the substrate nothing changes: c = ħ = G = 1 either way.
+   Row | Order | Dilated years | Undilated years | Ticks
+   1.1 Current age (input 1) | A | ~13,800,000,000 (billions) | ~1,891,096,790,000 (trillions) | 1,780,693,774... (billions)
+   1.2 Expected lifespan (input 2) | A | ~33,300,000,000 (billions) | ~4,563,298,770,000 (trillions) | ~4,296,891,500 (billions)
+   1.3 Corrected lifespan (total runtime, Nest 2, Rule 9) | B | ~33,285,087,800 (billions) | 4,561,255,267,290 (trillions) | 4,294,967,295 (billions)
+   1.4 Mismatch = row 1.2 - row 1.3, in ticks | B | ~14,912,200 (millions) | ~2,043,510,000 (billions) | ~1,924,200 (millions)
+   1.5 Remaining for Observer 0 = row 1.3 - row 1.1, in ticks | B | ~19,485,087,800 (billions) | ~2,670,158,480,000 (trillions) | 2,514,273,520... (billions)
+   1.6 CSE turn of the shell (Nest 0, [Kernel-S0]) | B | ~16,642,543,910 (billions) | 2,280,627,634,176 (trillions) | 2^31 = 2,147,483,648 (billions)
+   1.7 Observer 0 turning point (input 1 + input 3) | A | ~24,800,000,000 (billions) | ~3,398,492,780,000 (trillions) | ~3,200,087,360 (billions)
+   1.8 Turn lag = row 1.7 - row 1.6, in ticks | B | ~8,157,456,090 (billions) | ~1,117,865,150,000 (trillions) | ~1,052,603,720 (billions)
 
-INPUTS (Observer 0)
-6. c = 299,792,458 meters per second (exact, by the definition of the meter).
-7. ħ ≈ 1.054571817 × 10^-34 joule seconds (exact by definition, more digits available).
-8. G ≈ 6.674 × 10^-11 cubic meters per kilogram per second squared (measured, certain to 4 digits).
-9. Planck length, Planck time, Planck energy: Nest 8, Rule 6. Their digits are limited by G.
+   1.9 Result of row 1.3: under the whole-number postulate (Nest 10, Rule 4), the lifespan is the corrected value of row 1.3, not the expected value of row 1.2.
 
-ARITHMETIC
-10. The constants (Order A). Each is divided by the same combination of Planck units:
-   10.1 c: 299,792,458 / (1.616 × 10^-35 / 5.391 × 10^-44) ≈ 1.000
-   10.2 ħ: 1.054571817 × 10^-34 / (1.956 × 10^9 x 5.391 × 10^-44) ≈ 1.000
-   10.3 G: 6.674 × 10^-11 / (1.616 × 10^-35 x 299,792,458^4 / 1.956 × 10^9) ≈ 1.000
-   10.4 Both sides of each line are in the same Observer 0 units, so the dilation cancels.
-11. A fourth quantity (Order A): the tick. One tick ≈ 4.494 × 10^51 Planck times (Nest 8, Rule 12).
-12. Example of item 5.2: c = 299,792,458 / 137.0359991... ≈ 2,187,691.26 meters per undilated second.
+2. Percent of runtime:
+   2.1 Remaining: row 1.5 / row 1.3 = 58.5399922...%
+   2.2 Current: row 1.1 / row 1.3 = 41.4600077...%
+   2.3 Turn lag: row 1.8 / row 1.3 = 24.507840...%
+   2.4 Observer 0 turning point: row 1.7 / row 1.3 = 74.507840...%. The substrate turn is at 50%. They are the same turn, and the difference is the turn lag (line 2.3).
 
-CONCLUSION
-13. Check: lines 10.1 to 10.3 return 1 by construction, because the Planck units are built from c, ħ and G. This is a consistency check.
-14. Real work: the chain gives a new number only for a fourth quantity, as in item 11.
-15. Limit: the digits cannot be improved from the substrate side, which is exactly 1. They are limited by Observer 0's measurement of G.
+3. Conclusion:
+   3.1 Method: the arithmetic uses multiplication, division, addition and subtraction only. No new mathematics is introduced.
+   3.2 Additions: the substrate system (CSE), the dilation index (alpha inverse), the conversion ratio (1062), and the tick.
+   3.3 Computational bridge: CSE is computational, so it links to computer science (Nest 8, Rule 2 and Nest 12). This link is also a bridge to Observer 0.
+   3.4 Origin of 1062: (input 2 in years * alpha inverse) / 4,294,967,295 = 1062.475790... The whole number 1062 was kept (Nest 10, Rule 4). Input 2 is certain to about 3 digits, so the division alone fixes the ratio only between about 1060 and 1064.
+   3.5 Check: the arithmetic was run in both directions (Order A and Order B) and returns the same numbers.
+   3.6 Match: the corrected lifespan (row 1.3) is within 0.05% of Observer 0's estimate (input 2). The 1062 came from that estimate, so this is a consistency check.
+   3.7 Position: the current point of the runtime is line 2.2.
+   3.8 Ratio only: the 1062 is a conversion ratio obtained by division (line 3.4). It is not data storage, and no result depends on anything inside it.
+   3.9 Open test: a second measured value from Local Observer 0, other than the lifespan, converted with the same alpha inverse and the same 1062.
+   3.10 Limit: every result is certain only as far as inputs 1 to 3 are.
+   3.11 Status of the turn lag: its size (row 1.8) is fitted from Observer 0's input 3. CSE itself gives only the range, 0% to 50% of the runtime (Nest 5, Rule 15).
+
+--------------------------------------------------
+BLOCK C: Master-Chain Check (Observer 0 Constants in Substrate Units)
+--------------------------------------------------
+1. The constants (master chain, Order A). Each is divided by the same combination of Planck units:
+   1.1 c: 299,792,458 / (1.616 × 10^-35 / 5.391 × 10^-44) ≈ 1.000
+   1.2 ħ: 1.054571817 × 10^-34 / (1.956 × 10^9 x 5.391 × 10^-44) ≈ 1.000
+   1.3 G: 6.674 × 10^-11 / (1.616 × 10^-35 x 299,792,458^4 / 1.956 × 10^9) ≈ 1.000
+   1.4 Both sides of each line are in the same Observer 0 units, so the dilation cancels.
+2. Example of Nest 10, Rule 3 (a speed): c = 299,792,458 / 137.0359991... ≈ 2,187,691.26 meters per undilated second.
+3. Check: lines 1.1 to 1.3 return 1 by construction, because the Planck units are built from c, ħ and G. This is a consistency check.
+4. Real work: the chain gives a new number only for a fourth quantity: the tick (Nest 10, Rule 8).
+5. Limit: the digits cannot be improved from the substrate side, which is exactly 1. They are limited by Observer 0's measurement of G.
