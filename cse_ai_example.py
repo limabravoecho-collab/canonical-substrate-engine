@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.3)
+cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.6)
 
 THE RULE
     The engine computes. The LLM only translates.
@@ -58,7 +58,7 @@ TRANSLATOR_RULE = (
 
 # ==================================================
 # WIRE POINT 3: TIERS
-# A tier is one closed cycle mapped onto the engine (Nest 10, Rule 2).
+# A tier is one closed cycle mapped onto the engine (Nest 7, Rule 7).
 # You give a fraction from 0 to 1: how far the cycle has run.
 #   0.0 = Pole 0 (start)      0.5 = Pole 1 (the far turn)      1.0 = Pole 0 again
 # The engine returns the exact state for that fraction.
@@ -130,9 +130,10 @@ def engine_line(now: datetime | None = None, words: bool = True) -> str:
 #   "position S"      energy at position S
 #   "local V S"       dense matter pocket or void (Nest 5)
 #   "lag R"           minimum turn lag for a place at radius R (Nest 5, Rule 15)
-#   "order_a YEARS"   Observer 0 dilated years -> undilated years -> ticks (Appendix A)
-#   "order_b TICKS"   ticks -> undilated years -> Observer 0 dilated years (Appendix A)
-#   "appendix_a"      Appendix A, items 7 to 14
+#   "room S"          room for gravity when the shell is at position S (Nest 5, Rule 16)
+#   "order_a YEARS"   Observer 0 dilated years -> undilated years -> ticks (Nest 10)
+#   "order_b TICKS"   ticks -> undilated years -> Observer 0 dilated years (Nest 10)
+#   "appendix_a"      Block B: the second-chain results (the command keeps its earlier name)
 # ==================================================
 def engine_answer(query: str) -> str | None:
     """Return an exact ENGINE block for an engine query, or None if it is not one."""
@@ -148,6 +149,8 @@ def engine_answer(query: str) -> str | None:
             result = cse.position(int(parts[1]))
         elif len(parts) == 2 and parts[0] == "lag":
             result = cse.turn_lag(int(parts[1]))
+        elif len(parts) == 2 and parts[0] == "room":
+            result = cse.gravity_room(int(parts[1]))
         elif len(parts) == 2 and parts[0] == "order_a":
             result = cse.order_a(float(parts[1]))
         elif len(parts) == 2 and parts[0] == "order_b":
@@ -164,10 +167,11 @@ def engine_answer(query: str) -> str | None:
 # ==================================================
 # WIRE POINT 5: THE BRIDGE TO SCIENCE
 # CSE has two chains to human units. The engine returns both under "observer_0".
-#   planck_tier        the master chain (Nest 8, Rule 6): meters, seconds, joules
-#   whole_sphere_tier  the second chain (Appendix A): ticks and years
-# The second chain rests on two postulates: alpha inverse as the dilation index,
-# and the conversion ratio 1052. Use ratios when you compare with measurements;
+#   planck_tier        the master chain (Nest 9, Rule 3): meters, seconds, joules
+#   whole_sphere_tier  the second chain (Nest 10): ticks and years
+# The second chain rests on a postulate and a fitted value: alpha inverse as the
+# dilation index (a postulate), and the conversion ratio 1062 (fitted from
+# Observer 0's lifespan estimate). Use ratios when you compare with measurements;
 # see EXAMPLES.md for the pattern and for its limits.
 # ==================================================
 def bridge(s: int) -> dict:
