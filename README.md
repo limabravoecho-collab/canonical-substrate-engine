@@ -82,6 +82,7 @@ The full text is in `CSE_MODEL.txt`.
 - **Inert positions.** The shell is the outer edge of the energy. The energy travels across the positions. The positions do not move or stretch (Nest 4, Rule 3).
 - **Constant velocity.** The shell moves exactly 1 position per transition, in both arcs (Nest 4, Rule 10).
 - **Room for gravity.** The excess that drives gravity is at most the free fraction, `1 − s / M`. It is 0 at the turn (Nest 5, Rule 16).
+- **Local values.** The substrate fixes the limits and the balance. It does not fix the value at any one place (Nest 5, Rule 17).
 - **Mass unit.** 1 mass unit = 1 energy unit / c^2 = exactly 1 (Nest 7, Rule 4).
 - **Whole-sphere position.** A postulate: 1 position on the whole-sphere tier = the distance light covers in 1 tick = 7.749788... light-years (Nest 10, Rule 7).
 
@@ -172,7 +173,7 @@ Any reasonably skilled researcher or computer programmer should be able to test 
 These are stated here so that nobody has to find them the hard way.
 
 1. **Scale.** With Nest 9, Link 1 (1 position = 1 Planck length), one loop has a maximum radius of about 3.47 × 10^−26 meters, one arc lasts about 1.16 × 10^−34 seconds, and the total energy is about 4.2 × 10^18 joules. The model assigns this loop to a smaller tier. It gives the ratio to the whole-sphere tier for time, and for length under a postulate (Nest 10, Rules 7 and 8). The size of one energy unit on the whole-sphere tier is not stated.
-2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13 and 14), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, how gravity changes with distance (Nest 5, Rule 11), and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range.
+2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13 and 14), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, how gravity changes with distance (Nest 5, Rule 11), and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range. The value at any one place is outside the model's scope: Observer 0 finds it by measurement (Nest 5, Rule 17).
 3. **The axiom.** M = 2^31 − 1 is declared as an axiom (Nest 7, Rule 1). The match with the 32-bit register (Nest 12, Rules 4 and 5) is stated, not derived.
 4. **Statements.** Nests 8, 11 and 12 are statements. They are not calculations, and the engine does not compute them.
 5. **Energy shares.** Under the simplest reading, CSE's bound and free fractions today, 0.829 and 0.171, do not match the measured matter and dark energy shares, 0.315 and 0.685. They also move in the opposite direction as the sphere expands. See `EXAMPLES.md`, Examples 1 and 2.
