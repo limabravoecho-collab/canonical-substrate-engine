@@ -149,6 +149,7 @@ RULES:
 14. Time Conservation: Over the whole sphere, slow and fast local time cancel. No time is lost.
 15. Turn Lag: The shell turns at Pole 1 (Nest 4, Rule 4). Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION), so the inside of the sphere follows the turn late. The lag at a place is at least its distance from the shell, counted in transitions. That distance ranges from 0, at the shell, to M, at Pole 0. The lag is longer in dense matter pockets (Rule 13).
 16. Room for Gravity: The local bound fraction cannot exceed 1 (Rule 3), so the excess (Rule 11) is at most the free fraction, 1 - s / M. The room shrinks as the shell moves outward. One position from Pole 1 it is exactly 1 gap, 1 / M (Nest 3, Rule 2): the smallest possible gravity. At Pole 1 it is 0. This follows from Rules 3 and 11. It is not a new postulate.
+17. Local Values: The substrate fixes the limits (Rules 3, 15 and 16) and the balance (Rules 7 and 14). It does not fix the value at any one place.
 
 --------------------------------------------------
 NEST 6: Closure Engine (Reset and Regeneration of the Macro-Cycle)
