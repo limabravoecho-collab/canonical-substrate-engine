@@ -1,13 +1,15 @@
 /*
- * counter_test.c - CSE v1.3
+ * counter_test.c - CSE v1.6
  *
  * Runs a real 32-bit counter through one full loop and counts every step
  * and every sign flip. Compare the result with CSE_MODEL.txt:
  *
- *   CYCLE COUNT (Nest 0):
+ *   CYCLE COUNT (Global definitions, Nest 0):
  *     1 + 2,147,483,647 + 1 + 2,147,483,647 = 4,294,967,296
- *   TICK (Header) and Total Runtime (Nest 2, Rule 9):
+ *   TICK (Global definitions) and Total Runtime (Nest 2, Rules 9 and 10):
  *     highest counter value = 2^32 - 1 = 4,294,967,295, then back to 0
+ *   The 32-Bit Register (Nest 12, Rule 5):
+ *     2^32 states, and the largest signed value is M = 2,147,483,647
  *
  * Build:  gcc -O2 -o counter_test counter_test.c
  * Run:    ./counter_test        (a few seconds)
