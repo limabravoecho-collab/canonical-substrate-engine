@@ -1,4 +1,4 @@
-CANONICAL SUBSTRATE ENGINE (CSE) v1.6: A Deterministic Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v1.6: A Deterministic Computational Cosmological Logic Model
 
 SYSTEM: Root Container (Nest 0)
 BOUNDARY: All nested states are inside Nest 0.
@@ -36,7 +36,7 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS (Axiomatic Base)
 - STATE VALUE: Bound energy at s (Nest 1).
 - TRANSITION: Movement from one position to the next.
 - PHASE (= ARC): One ordered traversal of all positions. Phase 1: 0 to M. Phase 2: M to 0.
-- REVERSAL (P): The polarity inversion operator. Reverses the direction of expansion. Not a step, takes no time, does not change the position. Twice per cycle: at 0 and at M.
+- REVERSAL (P): The polarity inversion operator. Reverses the direction of expansion. Not a step, makes no transition, does not change the position. Twice per cycle: at 0 and at M.
 - STATE VISIT: One occurrence of a position during a cycle. Each counted operation makes one state visit.
 - CYCLE COUNT: Exactly 2^32 = 4,294,967,296 counted operations per cycle: 2^31 per phase: 1 reversal, then M transitions.
 - TRANSITION COUNT: Exactly 2^32 - 2 per cycle. The 2 reversals are not transitions.
@@ -149,7 +149,7 @@ RULES:
 14. Time Conservation: Over the whole sphere, slow and fast local time cancel. No time is lost.
 15. Turn Lag: The shell turns at Pole 1 (Nest 4, Rule 4). Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION), so the inside of the sphere follows the turn late. The lag at a place is at least its distance from the shell, counted in transitions. That distance ranges from 0, at the shell, to M, at Pole 0. The lag is longer in dense matter pockets (Rule 13).
 16. Room for Gravity: The local bound fraction cannot exceed 1 (Rule 3), so the excess (Rule 11) is at most the free fraction, 1 - s / M. The room shrinks as the shell moves outward. One position from Pole 1 it is exactly 1 gap, 1 / M (Nest 3, Rule 2): the smallest possible gravity. At Pole 1 it is 0. This follows from Rules 3 and 11. It is not a new postulate.
-17. Local Values: The substrate fixes the limits (Rules 3, 15 and 16) and the balance (Rules 7 and 14). It does not fix the value at any one place.
+17. Local Values: The substrate fixes the limits (Rules 3, 15 and 16) and the balance (Rules 7 and 14). It does not fix the value at any one place. The model is deterministic on the whole-sphere tier: the count, the shell position and the whole-sphere value.
 
 --------------------------------------------------
 NEST 6: Closure Engine (Reset and Regeneration of the Macro-Cycle)
@@ -329,7 +329,7 @@ The label in brackets is the size of the value.
    3.8 Ratio only: the 1062 is a conversion ratio obtained by division (line 3.4). It is not data storage, and no result depends on anything inside it.
    3.9 Open test: a second measured value from Local Observer 0, other than the lifespan, converted with the same alpha inverse and the same 1062.
    3.10 Limit: every result is certain only as far as inputs 1 to 3 are.
-   3.11 Status of the turn lag: its size (row 1.8) is fitted from Observer 0's input 3. CSE itself gives only the range, 0% to 50% of the runtime (Nest 5, Rule 15).
+   3.11 Status of the turn lag: its size (row 1.8) is fitted from Observer 0's input 3. CSE itself gives only the range of the minimum lag, 0% to 50% of the runtime (Nest 5, Rule 15).
 
 --------------------------------------------------
 BLOCK C: Master-Chain Check (Observer 0 Constants in Substrate Units)
