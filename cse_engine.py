@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_engine.py - Canonical Substrate Engine (CSE) v1.6
+cse_engine.py - Canonical Substrate Engine (CSE) v1.7
 A Deterministic Cosmological Logic Model, in executable form.
 
 This file computes only what the model defines with a number or a formula.
@@ -317,10 +317,8 @@ def local(local_bound_fraction: float, s: int) -> dict:
     here = Fraction(local_bound_fraction)
     if here > whole:
         kind = "dense matter pocket"
-    elif here < whole:
-        kind = "void"
     else:
-        kind = "even"
+        kind = "void"  # below or equal (Nest 5, Rule 5)
     return {
         "position": s,
         "whole_sphere_value": s / M,
@@ -590,7 +588,7 @@ def _show(data) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.6")
+    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.7")
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("state", help="state after counted operation OP (1 or larger)")
     p.add_argument("op", type=int)
