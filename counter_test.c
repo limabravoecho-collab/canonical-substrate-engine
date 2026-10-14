@@ -1,5 +1,5 @@
 /*
- * counter_test.c - CSE v1.6
+ * counter_test.c - CSE v1.7
  *
  * Runs a real 32-bit counter through one full loop and counts every step
  * and every sign flip. Compare the result with CSE_MODEL.txt:
