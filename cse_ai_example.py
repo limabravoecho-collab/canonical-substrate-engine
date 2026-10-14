@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.6)
+cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.7)
 
 THE RULE
     The engine computes. The LLM only translates.
