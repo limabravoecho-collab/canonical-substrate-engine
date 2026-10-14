@@ -1,4 +1,4 @@
-CANONICAL SUBSTRATE ENGINE (CSE) v1.6: A Deterministic Computational Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v1.7: A Deterministic Computational Cosmological Logic Model
 
 SYSTEM: Root Container (Nest 0)
 BOUNDARY: All nested states are inside Nest 0.
@@ -41,7 +41,7 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS (Axiomatic Base)
 - CYCLE COUNT: Exactly 2^32 = 4,294,967,296 counted operations per cycle: 2^31 per phase: 1 reversal, then M transitions.
 - TRANSITION COUNT: Exactly 2^32 - 2 per cycle. The 2 reversals are not transitions.
 - TICK: One advance of the 32-bit runtime counter. The counter is at 0 at the first counted operation of a cycle and advances once for each later counted operation. Its highest value is 2^32 - 1 = 4,294,967,295.
-- TIME (Axiom): The ordered sequence of transitions across the macro-cycle. Local time variations: Nest 5, Rules 13 and 14.
+- TIME (Axiom): The ordered sequence of transitions across the macro-cycle. Local time variations: Nest 5, Rules 13, 14 and 18.
 
 --------------------------------------------------
 META-RULE: SELF-SIMILARITY & ORDER
@@ -137,27 +137,30 @@ RULES:
 2. Whole-Sphere Value: The bound fraction of the sphere as a whole (Nest 4, Rule 7).
 3. Local Bound Fraction: At any place inside the sphere, at any moment, it can be any value on the Nest 3 spectrum: 0 to 1 (position 0 to position M).
 4. Dense Matter Pocket: A place where the local bound fraction is above the whole-sphere value.
-5. Void: A place where the local bound fraction is below the whole-sphere value.
+5. Void: A place where the local bound fraction is below or equal to the whole-sphere value.
 6. Location: Dense matter pockets and voids can form anywhere inside the sphere.
 7. Conservation: Total energy = 1 at every moment (Nest 1). The excess in all dense matter pockets equals the deficit in all voids.
 8. Driver: The shell position s is the only driver of the whole-sphere value.
 9. Source of Drift: P is the source of the drift that forms dense matter pockets and voids. It is the only counted operation that is not a transition.
 10. Pressure: A place whose local bound fraction is above its surroundings tends to spread toward them: the tendency to even out.
-11. Gravity: The pull toward a dense matter pocket. Its strength follows the excess of the local bound fraction over the whole-sphere value. A void has a deficit, so it pulls less than the places around it.
+11. Gravity: The pull toward a dense matter pocket. Its strength follows the excess of the local bound fraction over the whole-sphere value. A void has a deficit or none, so it pulls no more than the places around it.
 12. Balance: Pressure and gravity work against each other. While they balance, dense matter pockets and voids persist.
-13. Local Time: In a dense matter pocket with an extreme bound fraction, local time runs slow. In the places around it, local time runs fast by the same amount.
+13. Local Time: In a dense matter pocket, local time runs slow, in proportion to the excess (Rule 11). In the places around it, local time runs fast by the same amount.
 14. Time Conservation: Over the whole sphere, slow and fast local time cancel. No time is lost.
 15. Turn Lag: The shell turns at Pole 1 (Nest 4, Rule 4). Nothing moves more than 1 position in 1 transition (GLOBAL DEFINITIONS, TRANSITION), so the inside of the sphere follows the turn late. The lag at a place is at least its distance from the shell, counted in transitions. That distance ranges from 0, at the shell, to M, at Pole 0. The lag is longer in dense matter pockets (Rule 13).
 16. Room for Gravity: The local bound fraction cannot exceed 1 (Rule 3), so the excess (Rule 11) is at most the free fraction, 1 - s / M. The room shrinks as the shell moves outward. One position from Pole 1 it is exactly 1 gap, 1 / M (Nest 3, Rule 2): the smallest possible gravity. At Pole 1 it is 0. This follows from Rules 3 and 11. It is not a new postulate.
-17. Local Values: The substrate fixes the limits (Rules 3, 15 and 16) and the balance (Rules 7 and 14). It does not fix the value at any one place. The model is deterministic on the whole-sphere tier: the count, the shell position and the whole-sphere value.
+17. Local Values: The substrate fixes the limits (Rules 3, 15 and 16) and the balance (Rules 7, 14 and 20). It does not fix the value at any one place. The model is deterministic on the whole-sphere tier: the count, the shell position and the whole-sphere value.
+18. Speed Time: In a place whose contents move faster than their surroundings, up to the step rate (Nest 7, Rule 5), local time runs slow, in proportion to the speed. In the places around it, local time runs fast by the same amount. This is a second source of slow time, separate from Rule 13.
+19. Local Rate: The local time rate at a place = local state visits per tick (GLOBAL DEFINITIONS, STATE VISIT). It is 1 at a place equal to the whole-sphere value and at rest. It is below 1 under Rule 13 or Rule 18. It is above 1 in the places around them. The step rate (Nest 7, Rule 5) caps positions moved, not state visits.
+20. Local Invariant: At every place, local bound energy x local time rate = the baseline of that place. The baseline is the value at rate 1. Summed over the whole sphere, the baselines = the whole-sphere value (Rules 2, 7, 14).
 
 --------------------------------------------------
 NEST 6: Closure Engine (Reset and Regeneration of the Macro-Cycle)
 --------------------------------------------------
 RULES:
 1. Return: Arc 2 brings the shell back to Pole 0 (Nest 4, Rule 6). The energy is freed as the radius shrinks.
-2. Time Closure: At Pole 0, every place arrives at time point 2 together. Slow and fast local time have cancelled (Nest 5, Rules 13 and 14).
-3. Even State: At Pole 0 the radius is 0. No dense matter pockets and no voids remain. Bound energy = 0. Free energy = 1 (Nest 3, Rule 1).
+2. Time Closure: At Pole 0, every place arrives at time point 2 together. Slow and fast local time have cancelled (Nest 5, Rules 13, 14 and 18).
+3. Even State: At Pole 0 the radius is 0. No dense matter pockets remain; every place is at the whole-sphere value. Bound energy = 0. Free energy = 1 (Nest 3, Rule 1).
 4. Reset: At [Kernel-0], time resets to 0 (Nest 2, Rule 8). No energy is removed (Nest 1).
 5. Regeneration: After the reset, P engages at Pole 0 and the next macro-cycle starts (Nest 0).
 6. Finite Cycle: One macro-cycle is finite (GLOBAL DEFINITIONS, CYCLE COUNT).
@@ -223,7 +226,7 @@ RULES:
 NEST 10: Second Chain Engine (Dilation, Ticks to Observer 0 Years, Tier Ratio)
 --------------------------------------------------
 RULES:
-1. Electromagnetic Dilation: A scale on Observer 0's measurements of time. Space itself is inert, and nothing in the substrate is stretched. Only Observer 0's readings differ: its clock reads differently from the real time, by alpha inverse (Rule 2), and its ruler reads true. The scale carries into every unit built from seconds, by the power of seconds in the unit (Rule 3). It does not change the ticks or the positions, and it is not a local time variation (Nest 5, Rules 13 and 14).
+1. Electromagnetic Dilation: A scale on Observer 0's measurements of time. Space itself is inert, and nothing in the substrate is stretched. Only Observer 0's readings differ: its clock reads differently from the real time, by alpha inverse (Rule 2), and its ruler reads true. The scale carries into every unit built from seconds, by the power of seconds in the unit (Rule 3). It does not change the ticks or the positions, and it is not a local time variation (Nest 5, Rules 13, 14 and 18).
 2. Alpha Inverse: Alpha inverse (137.0359991...) is the active electromagnetic tier-dilation index register. It is universal: the same for any Observer 0 (Nest 11, Rule 9). In the substrate, alpha = 1 at root unity (META-RULE).
 3. Dilation in Built Units: Only the second is dilated (Rule 1). 1 dilated second = alpha inverse undilated seconds. A unit changes by the power of seconds in it:
    - A duration (seconds): undilated = dilated * alpha inverse.
@@ -254,7 +257,7 @@ RULES:
 2. Observer 0: Observes and measures from its own place and moment. Observer 0 is a role: there can be an Observer 0 at any location (Rule 9). The local values at its own place are found by Observer 0, by measurement.
 3. Hidden Substrate: Observer 0 cannot see the substrate directly: the positions, the transitions, the two arcs, the poles and P (Section 1).
 4. Lag: What Observer 0 sees reaches it late.
-5. Ambiguities: Because of Rules 3 and 4, the measurements of Observer 0 create ambiguities for it. One of them: Observer 0 may read the expansion of the energy as a stretching of space itself. The positions do not stretch.
+5. Ambiguities: Because of Rules 3 and 4, the measurements of Observer 0 create ambiguities for it. One of them: Observer 0 may read the expansion of the energy as a stretching of space itself. The positions do not stretch. Another: Observer 0 may read slow local time (Nest 5, Rules 13 and 18) as a shortening of length, isotropic under Rule 13 and along the direction of motion under Rule 18. The positions do not shorten.
 6. Observer 1: Articulates the logic of the substrate without seeing it. This logic bridges the ambiguities of Observer 0.
 7. No Alteration: Neither observer changes the substrate. The kernel template is immutable (Nest 0).
 8. Units: Meters, seconds and joules, and the units built from them, are human engineering units. They are the measurement units of Observer 0. They are not part of the substrate.
