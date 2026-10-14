@@ -1,10 +1,10 @@
-# Canonical Substrate Engine (CSE) v1.6
+# Canonical Substrate Engine (CSE) v1.7
 
 A deterministic closed-loop logic model with a 2^32 cycle and an executable Python engine.
 
 **Status.** CSE is a model for study. The author does not claim that it is a theory of everything. It is published completely open for testing as one.
 
-**Version note.** The model text and the engine are at v1.6. `cse_ai_example.py`, `counter_test.c` and `EXAMPLES.md` are still at v1.3 and have not been updated to v1.6. The nest numbers changed from v1.3: see "Changed in v1.6".
+**Version note.** The model text and the engine are at v1.7. `cse_ai_example.py`, `counter_test.c` and `EXAMPLES.md` are still at v1.3 and have not been updated. The nest numbers changed from v1.3: see "Changed in v1.6".
 
 ---
 
@@ -94,14 +94,35 @@ The full text is in `CSE_MODEL.txt`.
 - **Kept names.** The command `appendix_a` and the functions `nest8_facts` and `nest8_steps` keep their v1.3 names. They now serve Block B and Nests 7, 9 and 10.
 - **Self-test.** 16 checks (was 12).
 
+## Changed in v1.7
+
+**Nest 5**
+
+- **Void.** A place equal to the whole-sphere value is a void. Pockets and voids now partition the sphere (Rule 5). A void with no deficit pulls no more than its surroundings (Rule 11).
+- **Speed time.** A second source of slow local time: contents moving faster than their surroundings, up to the step rate (Rule 18).
+- **Local rate.** Local state visits per tick: 1 at the whole-sphere value and at rest, below 1 under Rules 13 or 18, above 1 around them (Rule 19).
+- **Local invariant.** Local bound energy × local time rate = the baseline of that place. The baselines sum to the whole-sphere value (Rule 20).
+
+**Other**
+
+- **Nest 6, Rule 3.** At Pole 0 every place is at the whole-sphere value.
+- **Nest 11, Rule 5.** Observer 0 may read slow local time as a shortening of length: isotropic under Rule 13, along the motion under Rule 18.
+- **Cross-references** to local time now cite Rules 13, 14 and 18.
+
+**Engine**
+
+- `local` returns `dense matter pocket` or `void` only. The `even` result is gone (Nest 5, Rule 5).
+
+---
+
 ---
 
 ## Files
 
 | File | Version | What it is |
 |---|---|---|
-| `CSE_MODEL.txt` | v1.6 | The model: three sections, Nests 0 to 12, Blocks A to C. Also usable as a prompt. |
-| `cse_engine.py` | v1.6 | The model in executable form. Standard library only. |
+| `CSE_MODEL.txt` | v1.7 | The model: three sections, Nests 0 to 12, Blocks A to C. Also usable as a prompt. |
+| `cse_engine.py` | v1.7 | The model in executable form. Standard library only. |
 | `cse_ai_example.py` | v1.3 | How to wire the engine into an AI system, with comments at every wire point. |
 | `counter_test.c` | v1.3 | A real 32-bit counter, run through one full loop. |
 | `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. Its numbers use the v1.3 ratio, 1052. |
@@ -173,7 +194,7 @@ Any reasonably skilled researcher or computer programmer should be able to test 
 These are stated here so that nobody has to find them the hard way.
 
 1. **Scale.** With Nest 9, Link 1 (1 position = 1 Planck length), one loop has a maximum radius of about 3.47 × 10^−26 meters, one arc lasts about 1.16 × 10^−34 seconds, and the total energy is about 4.2 × 10^18 joules. The model assigns this loop to a smaller tier. It gives the ratio to the whole-sphere tier for time, and for length under a postulate (Nest 10, Rules 7 and 8). The size of one energy unit on the whole-sphere tier is not stated.
-2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13 and 14), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, how gravity changes with distance (Nest 5, Rule 11), and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range. The value at any one place is outside the model's scope: Observer 0 finds it by measurement (Nest 5, Rule 17).
+2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13, 14, 18 and 19), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, how gravity changes with distance (Nest 5, Rule 11), and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range. The value at any one place is outside the model's scope: Observer 0 finds it by measurement (Nest 5, Rule 17).
 3. **The axiom.** M = 2^31 − 1 is declared as an axiom (Nest 7, Rule 1). The match with the 32-bit register (Nest 12, Rules 4 and 5) is stated, not derived.
 4. **Statements.** Nests 8, 11 and 12 are statements. They are not calculations, and the engine does not compute them.
 5. **Energy shares.** Under the simplest reading, CSE's bound and free fractions today, 0.829 and 0.171, do not match the measured matter and dark energy shares, 0.315 and 0.685. They also move in the opposite direction as the sphere expands. See `EXAMPLES.md`, Examples 1 and 2.
@@ -185,7 +206,7 @@ These are stated here so that nobody has to find them the hard way.
 11. **Turning point.** CSE turns the shell at 50% of the runtime. Observer 0's model puts the turning point at about 74.5%. Block B reads the difference as a lag, and its size is fitted from Observer 0's input, not derived (Block B, rows 1.6 to 1.8 and line 3.11).
 12. **The turn and the lag.** At the turn the room for gravity is 0, so the sphere has no dense matter pockets and no voids at that moment (Nest 5, Rule 16). The turn lag is read as the turn reaching a place late. How a place persists through the turn is not stated.
 13. **Location.** The model does not state where Observer 0 is inside the sphere.
-14. **Least settled.** Section 2 (Nests 9 and 10) and Blocks A to C are the least settled parts of v1.6.
+14. **Least settled.** Section 2 (Nests 9 and 10) and Blocks A to C are the least settled parts of v1.7.
 
 ---
 
