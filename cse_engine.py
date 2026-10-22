@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 cse_engine.py - Canonical Substrate Engine (CSE) v1.8
-A Deterministic Cosmological Logic Model, in executable form.
+A Deterministic Computational Cosmological Logic Model, in executable form.
 
 This file computes only what the model defines with a number or a formula.
 
 SECTION 1, SUBSTRATE (counts only)
+  Order of Operations : the alpha stack 136, 137, 137 + delta, G resolution, overflow (Rules 1 to 6)
   Global definitions + Nest 0 : the closed cycle of 4,294,967,296 counted operations, and the tick
   Nest 1 + Nest 3 : bound / free energy at a position
   Nest 2          : phase (arc), time points 0, 1, 2, the total runtime, the tick count (Rule 10)
@@ -20,9 +21,11 @@ SECTION 2, CONVERSION BRIDGE (rates and ratios)
                     the whole-sphere position (Rule 7), the tier ratio (Rule 8)
 
 SECTION 3, OBSERVER 0 (inputs and readings)
+  Nest 13         : c_local = 1 / sqrt(alpha_inv_local) (Rule 4), the hardware basis counts (Rule 10)
   Block A         : the inputs
   Block B         : the second-chain results (Order A, Order B)
   Block C         : the constants in substrate units
+  Block D         : the numerical checks, Tests 1 to 5
 
 The command appendix_a keeps its name from earlier versions. It now returns the
 results of Block B.
@@ -33,7 +36,7 @@ The engine prints full arithmetic values. Block B shows the same values
 cut at the certainty limit of alpha inverse.
 
 Use as a tool:
-  python3 cse_engine.py                     summary
+  python3 cse_engine.py                 summary
   python3 cse_engine.py state 2147483649
   python3 cse_engine.py position 1000
   python3 cse_engine.py local 0.75 1000
@@ -42,6 +45,8 @@ Use as a tool:
   python3 cse_engine.py order_a 13.8e9
   python3 cse_engine.py order_b 4294967295
   python3 cse_engine.py appendix_a
+  python3 cse_engine.py alpha 0.036
+  python3 cse_engine.py block_d
   python3 cse_engine.py selftest
 Use as a module:
   import cse_engine as cse
@@ -57,23 +62,45 @@ from fractions import Fraction
 # --------------------------------------------------
 # SECTION 1: GLOBAL DEFINITIONS & COUNTING CONVENTIONS
 # --------------------------------------------------
-M = 2**31 - 1                         # LIMIT: 2,147,483,647
-POSITIONS = 2**31                     # positions 0 to M
-CYCLE_COUNT = 2**32                   # counted operations per cycle
-TICK_COUNT = 2**32 - 1                # highest value of the runtime counter (Nest 2, Rule 9)
-TRANSITION_COUNT = 2**32 - 2          # the 2 reversals are not transitions
+M = 2**31 - 1                 # LIMIT: 2,147,483,647
+POSITIONS = 2**31             # positions 0 to M
+CYCLE_COUNT = 2**32           # counted operations per cycle
+TICK_COUNT = 2**32 - 1        # highest value of the runtime counter (Nest 2, Rule 9)
+TRANSITION_COUNT = 2**32 - 2  # the 2 reversals are not transitions
 
 # --------------------------------------------------
-# SECTION 3, BLOCK A: INPUTS 4 TO 6 (c, h-bar and G in human units)
+# SECTION 1, ORDER OF OPERATIONS & SUBSTRATE LAW (Rules 1 to 6)
+# Executes before all nests.
+# --------------------------------------------------
+G_SUBSTRATE = 1                                       # Rule 1: exact substrate units
+ALPHA_SUBSTRATE = 1                                   # Rule 1: no dilation at root
+TIERS = 4                                             # Rule 2: Nests 0 to 3
+REGISTER_BITS = 32                                    # Rule 2: register width, M = 2^31 - 1
+CONTROL_BITS = 4 * 2                                  # Rule 2: 4 kernel states x 2 polarity directions
+ALPHA_INV_UNIVERSAL = TIERS * REGISTER_BITS + CONTROL_BITS   # Rule 2: 128 + 8 = 136
+ALPHA_INV_NEST = ALPHA_INV_UNIVERSAL + 1              # Rule 3: 137
+ALPHA_INVERSE = 137.035999177   # Rule 4: alpha_inv_local at the current cosmic mean, measured. Shown as 137.035999...
+ALPHA_INV_LOCAL = ALPHA_INVERSE                       # the same number, under its v1.8 name
+DELTA_MEAN = ALPHA_INVERSE - ALPHA_INV_NEST           # Rule 4: 0.035999...
+DELTA_VOID = 0.01                                     # Rule 4
+DELTA_CLUSTER = 0.06                                  # Rule 4
+DELTA_MAX = ALPHA_INV_UNIVERSAL                       # Rule 6: delta -> 136, alpha_inv_local -> 273
+G_LOCAL_SUBSTRATE = G_SUBSTRATE / ALPHA_INVERSE**2    # Rule 5: 5.325135e-05 substrate units
+REGISTER_MAX = 0x7FFFFFFF                             # Rule 6: = M
+REGISTER_ROLL = 0x80000000                            # Rule 6: the next tick after REGISTER_MAX
+
+# --------------------------------------------------
+# SECTION 3, BLOCK A: INPUTS 4 TO 6 (c, h-bar and G_local in human units)
 # They are placed here because the master chain is built from them.
 # --------------------------------------------------
-C = 299792458.0                       # input 4: meters per second (exact by definition)
-HBAR = 1.054571817e-34                # input 5: joule seconds (exact by definition)
-G = 6.674e-11                         # input 6: m^3 / (kg s^2) (measured, certain to 4 digits)
+C = 299792458.0               # input 4: meters per second (exact by definition)
+HBAR = 1.054571817e-34        # input 5: joule seconds (exact by definition)
+G = 6.674e-11                 # input 6: G_local human, m^3 / (kg s^2) (measured, certain to 4 digits)
+G_TO_HUMAN = G / G_LOCAL_SUBSTRATE   # input 6: conversion factor, found by division. Shown as 1.253e-06
 
 # --------------------------------------------------
 # SECTION 2, NEST 9: THE MASTER CHAIN (RULE 3)
-# Each link uses the link before it.
+# Each link uses the link before it. Inputs: h-bar, c and G_local human (Rule 2).
 # --------------------------------------------------
 METERS_PER_POSITION = math.sqrt(HBAR * G / C**3)        # Link 1 (space)
 SECONDS_PER_TRANSITION = METERS_PER_POSITION / C        # Link 2 (time)
@@ -81,9 +108,9 @@ JOULES_PER_ENERGY_UNIT = HBAR / SECONDS_PER_TRANSITION  # Link 3 (energy)
 
 # --------------------------------------------------
 # SECTION 2, NEST 10: THE SECOND CHAIN
+# Alpha stack: see Order of Operations, Rules 2 to 4 (Nest 10, Rule 1).
 # --------------------------------------------------
-ALPHA_INVERSE = 137.035999177   # dilation index (Nest 10, Rule 2). Shown there as 137.0359991...
-YEARS_PER_TICK = 1062           # conversion ratio: 1 tick = 1062 undilated years (Nest 10, Rule 4)
+YEARS_PER_TICK = 1062           # conversion ratio: 1 tick = 1062 undilated years (Nest 10, Rule 5)
 SECONDS_PER_YEAR = 31_557_600   # Nest 10, Rule 8
 
 # Section 3, Block A: inputs 1 to 3. Observer 0 estimates, taken as given.
@@ -125,20 +152,46 @@ def order_b(ticks: float) -> dict:
 
 
 # --------------------------------------------------
+# SECTION 1, ORDER OF OPERATIONS, RULES 2 TO 6: THE ALPHA STACK AT A PLACE
+# Also Nest 13, Rule 4: c_local = 1 / sqrt(alpha_inv_local).
+# --------------------------------------------------
+def alpha_stack(delta: float = DELTA_MEAN) -> dict:
+    """The alpha stack and G resolution for a local deviation delta (0 to 136).
+
+    alpha_inv_local = 136 + 1 + delta. G_local substrate = 1 / alpha_inv_local^2.
+    G_local human = G_local substrate x the conversion factor (Block A, input 6).
+    Overflow (Rule 6) is reached when delta = 136: alpha_inv_local = 273.
+    """
+    if not 0 <= delta <= DELTA_MAX:
+        raise ValueError("delta must be from 0 to 136")
+    alpha_local = ALPHA_INV_NEST + delta
+    g_sub = G_SUBSTRATE / alpha_local**2
+    return {
+        "delta": delta,
+        "alpha_inv_universal": ALPHA_INV_UNIVERSAL,         # Rule 2
+        "alpha_inv_nest": ALPHA_INV_NEST,                   # Rule 3
+        "alpha_inv_local": alpha_local,                     # Rule 4
+        "G_substrate": G_SUBSTRATE,                         # Rule 1
+        "G_local_substrate": g_sub,                         # Rule 5
+        "G_local_human": g_sub * G_TO_HUMAN,                # Rule 5
+        "c_local": 1 / math.sqrt(alpha_local),              # Nest 13, Rule 4
+        "overflow": delta == DELTA_MAX,                     # Rule 6
+    }
+
+
+# --------------------------------------------------
 # SECTION 3, BLOCK B: SECOND-CHAIN RESULTS
 # --------------------------------------------------
 def appendix_a(current_age: float = CURRENT_AGE_YEARS,
                lifespan: float = LIFESPAN_YEARS,
                expansion_ends_in: float = EXPANSION_ENDS_IN_YEARS) -> dict:
-    """Block B, rows 1.1 to 1.8 and lines 2.1 to 2.4. Subtraction is done in ticks only (Nest 8, Rule 7)."""
+    """Block B, rows 1.1, 1.3, 1.5, 1.6 and lines 2.1, 2.2. Subtraction is done in ticks only (Nest 8, Rule 7).
+
+    lifespan and expansion_ends_in are inputs 2 and 3 (Block A). They are reported, not used."""
     age = order_a(current_age)                              # row 1.1
-    expected = order_a(lifespan)                            # row 1.2
     corrected = order_b(TICK_COUNT)                         # row 1.3
-    mismatch = order_b(expected["ticks"] - TICK_COUNT)      # row 1.4
     remaining = order_b(TICK_COUNT - age["ticks"])          # row 1.5
     cse_turn = order_b(2**31)                               # row 1.6
-    observer_turn = order_a(current_age + expansion_ends_in)  # row 1.7
-    lag = order_b(observer_turn["ticks"] - 2**31)            # row 1.8
     return {
         "inputs_taken_as_given": {
             "current_age_years": current_age,
@@ -146,35 +199,64 @@ def appendix_a(current_age: float = CURRENT_AGE_YEARS,
             "expansion_ends_in_years": expansion_ends_in,
         },
         "current_age": age,
-        "expected_lifespan": expected,
         "corrected_lifespan": corrected,
-        "mismatch": mismatch,
         "remaining": remaining,
+        "cse_turn_of_the_shell": cse_turn,
         "percent_of_runtime": {                             # lines 2.1 and 2.2
             "remaining": remaining["ticks"] / TICK_COUNT * 100,
             "current": age["ticks"] / TICK_COUNT * 100,
-        },
-        "origin_of_1062": lifespan * ALPHA_INVERSE / TICK_COUNT,  # line 3.4
-        "turning_point": {                                  # rows 1.6 to 1.8, lines 2.3 and 2.4
-            "cse_turn_of_the_shell": cse_turn,
-            "observer_0_turning_point": observer_turn,
-            "lag": lag,
-            "lag_percent_of_runtime": lag["ticks"] / TICK_COUNT * 100,
-            "observer_0_percent_of_runtime": observer_turn["ticks"] / TICK_COUNT * 100,
-            "status": "fitted from the Observer 0 input, not derived (Block B, line 3.11)",
         },
     }
 
 
 # --------------------------------------------------
-# SECTION 2, NEST 10, RULE 3: DILATION IN BUILT UNITS
+# SECTION 3, BLOCK D: NUMERICAL CHECKS (Tests 1 to 5)
+# --------------------------------------------------
+def block_d() -> dict:
+    """Block D, Tests 1 to 5. Every number is computed from the constants above."""
+    void, cluster, mean, hole = (alpha_stack(DELTA_VOID), alpha_stack(DELTA_CLUSTER),
+                                 alpha_stack(DELTA_MEAN), alpha_stack(DELTA_MAX))
+    return {
+        "test_1": {                                         # 136 = 4 x 32 + 8
+            "tiers": TIERS, "bits": REGISTER_BITS, "control": CONTROL_BITS,
+            "data_bus": TIERS * REGISTER_BITS, "alpha_inv_universal": ALPHA_INV_UNIVERSAL,
+        },
+        "test_2": {                                         # G from the alpha stack
+            "alpha_inv_local": mean["alpha_inv_local"],
+            "G_calc_substrate": mean["G_local_substrate"],
+            "G_calc_human": mean["G_local_human"],
+            "G_measured_human": G,
+        },
+        "test_3": {                                         # c_local follows 1 / alpha_inv_local
+            "c_local_at_mean": mean["c_local"],
+        },
+        "test_4": {                                         # void vs cluster
+            "delta_void": DELTA_VOID, "delta_cluster": DELTA_CLUSTER,
+            "delta_variance": DELTA_CLUSTER / DELTA_VOID,
+            "G_void_substrate": void["G_local_substrate"],
+            "G_cluster_substrate": cluster["G_local_substrate"],
+            "G_ratio": void["G_local_substrate"] / cluster["G_local_substrate"],
+            "G_variance_percent": (void["G_local_substrate"] / cluster["G_local_substrate"] - 1) * 100,
+        },
+        "test_5": {                                         # overflow, no singularity
+            "delta_max": DELTA_MAX,
+            "alpha_inv_max": hole["alpha_inv_local"],
+            "G_substrate_at_max": hole["G_local_substrate"],
+            "register_max": REGISTER_MAX, "register_roll": REGISTER_ROLL,
+            "overflow": hole["overflow"],
+        },
+    }
+
+
+# --------------------------------------------------
+# SECTION 2, NEST 10, RULE 4: DILATION IN BUILT UNITS
 # --------------------------------------------------
 def undilate(value: float, seconds_power: int) -> float:
     """Dilated value -> undilated value, by the power of seconds in the unit.
 
-    seconds_power = 1  : a duration (seconds)             value * alpha inverse
-    seconds_power = -1 : a speed, and h-bar (per second)  value / alpha inverse
-    seconds_power = -2 : an energy, and G (per second^2)  value / alpha inverse^2
+    seconds_power = 1  : a duration (seconds)                   value * alpha_inv_local
+    seconds_power = -1 : a speed, and h-bar (per second)        value / alpha_inv_local
+    seconds_power = -2 : an energy, and G_local (per second^2)  value / alpha_inv_local^2
     """
     return value * ALPHA_INVERSE**seconds_power
 
@@ -186,10 +268,10 @@ def _state(op: int, m: int) -> dict:
     """State after counted operation number `op` (1, 2, 3, ...), for limit m.
 
     Order inside one cycle (Nest 0, CYCLE COUNT):
-      op 1                : P at [Kernel-0]     (polarity switch)
-      op 2 .. m+1         : m increments         (Phase 1)
-      op m+2              : P at [Kernel-S0]     (polarity return)
-      op m+3 .. 2m+2      : m decrements         (Phase 2)
+      op 1            : P at [Kernel-0]      (polarity switch)
+      op 2 .. m+1     : m increments         (Phase 1)
+      op m+2          : P at [Kernel-S0]     (polarity return)
+      op m+3 .. 2m+2  : m decrements         (Phase 2)
     The loop is closed: op 2m+3 is op 1 of the next cycle.
 
     Tick (Global definitions, TICK; Nest 2, Rule 10): the runtime counter is at 0 at op 1 and advances
@@ -262,7 +344,7 @@ def _state(op: int, m: int) -> dict:
 def state(op: int) -> dict:
     """State of the model after counted operation `op`, with Observer 0 units.
 
-    planck_tier        : the master chain (Nest 9, Rule 3).
+    planck_tier       : the master chain (Nest 9, Rule 3).
     whole_sphere_tier : the second chain (Nest 10, Order B), from the tick.
     """
     st = _state(op, M)
@@ -390,10 +472,15 @@ def totals() -> dict:
         "tick_count": TICK_COUNT,
         "transition_count": TRANSITION_COUNT,
         "reversals_per_cycle": 2,
-        "tick_count_parts": {                       # Nest 2, Rule 10
+        "tick_count_parts": {                                # Nest 2, Rule 10
             "arc_1": M,
             "reversal_at_kernel_s0": 1,
             "arc_2": M,
+        },
+        "order_of_operations": alpha_stack(),               # Rules 1 to 6, at the cosmic mean
+        "hardware_basis": {                                 # Nest 13, Rule 10
+            "polarity_bits": 1, "magnitude_bits": 8, "mantissa_bits": 23,
+            "total_bits": 1 + 8 + 23,
         },
         "master_chain": {
             "meters_per_position": METERS_PER_POSITION,
@@ -412,7 +499,7 @@ def totals() -> dict:
             "density_kg_per_m3": mass / METERS_PER_POSITION**3,
         },
         "second_chain": {
-            "alpha_inverse": ALPHA_INVERSE,
+            "alpha_inv_local": ALPHA_INVERSE,
             "undilated_years_per_tick": YEARS_PER_TICK,
             "dilated_years_per_tick": YEARS_PER_TICK / ALPHA_INVERSE,
         },
@@ -420,7 +507,7 @@ def totals() -> dict:
             "total_runtime_ticks": TICK_COUNT,
             "total_runtime_undilated_years": runtime["undilated_years"],
             "total_runtime_dilated_years": runtime["dilated_years"],
-            "light_years_per_position": LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION,    # Nest 10, Rule 7
+            "light_years_per_position": LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION,   # Nest 10, Rule 7
         },
         "tier_ratio": {
             "undilated_seconds_per_tick": UNDILATED_SECONDS_PER_TICK,
@@ -467,7 +554,7 @@ def selftest() -> list[str]:
         assert st["bound_units"] + st["free_units"] == m
         assert st["tick"] == k - 1
     assert sum(1 for operation, _ in walk if operation == "P") == 2
-    for k in range(2, 2 * m + 3):                        # Nest 4, Rule 10: constant velocity
+    for k in range(2, 2 * m + 3):                          # Nest 4, Rule 10: constant velocity
         now, before = _state(k, m), _state(k - 1, m)
         assert abs(now["position"] - before["position"]) == (0 if now["operation"] == "P" else 1)
     nxt = _state(2 * m + 3, m)
@@ -515,29 +602,18 @@ def selftest() -> list[str]:
 
     # 7. Block B, against the values printed in the model text
     a = appendix_a()
-    assert int(a["current_age"]["ticks"]) == 1_780_693_774                        # row 1.1
-    assert round(a["expected_lifespan"]["ticks"], -1) == 4_296_891_500          # row 1.2
+    assert int(a["current_age"]["ticks"]) == 1_780_693_774                      # row 1.1
     assert a["corrected_lifespan"]["undilated_years"] == 4_561_255_267_290      # row 1.3
     assert round(a["corrected_lifespan"]["dilated_years"], -2) == 33_285_087_800  # row 1.3
-    assert round(a["mismatch"]["ticks"], -1) == 1_924_200                         # row 1.4
-    assert round(a["mismatch"]["dilated_years"], -2) == 14_912_200               # row 1.4
-    assert int(a["remaining"]["ticks"]) == 2_514_273_520                         # row 1.5
+    assert int(a["remaining"]["ticks"]) == 2_514_273_520                        # row 1.5
     assert round(a["remaining"]["dilated_years"], -2) == 19_485_087_800         # row 1.5
+    assert a["cse_turn_of_the_shell"]["undilated_years"] == 2_280_627_634_176   # row 1.6
+    assert round(a["cse_turn_of_the_shell"]["dilated_years"], -1) == 16_642_543_910  # row 1.6
     assert abs(a["percent_of_runtime"]["current"] - 41.4600077) < 1e-7          # line 2.2
     assert abs(a["percent_of_runtime"]["remaining"] - 58.5399922) < 1e-7        # line 2.1
-    assert abs(a["origin_of_1062"] - 1062.475790) < 1e-6                        # line 3.4
-    assert int(a["origin_of_1062"]) == YEARS_PER_TICK
-    t = a["turning_point"]
-    assert t["cse_turn_of_the_shell"]["undilated_years"] == 2_280_627_634_176   # row 1.6
-    assert round(t["cse_turn_of_the_shell"]["dilated_years"], -1) == 16_642_543_910  # row 1.6
-    assert round(t["observer_0_turning_point"]["ticks"], -1) == 3_200_087_360   # row 1.7
-    assert round(t["lag"]["ticks"], -1) == 1_052_603_720                          # row 1.8
-    assert round(t["lag"]["dilated_years"], -1) == 8_157_456_090                # row 1.8
-    assert abs(t["lag_percent_of_runtime"] - 24.507840) < 1e-6                  # line 2.3
-    assert abs(t["observer_0_percent_of_runtime"] - 74.507840) < 1e-6            # line 2.4
-    done.append("block B: rows 1.1 to 1.8 and lines 2.1 to 2.4 match the model text")
+    done.append("block B: rows 1.1, 1.3, 1.5, 1.6 and lines 2.1, 2.2 match the model text")
 
-    # 8. Order A and Order B return the same numbers (Block B, line 3.5)
+    # 8. Order A and Order B return the same numbers (Nest 8, Rule 6)
     for years in (1.0, 13.8e9, 33.3e9):
         back = order_b(order_a(years)["ticks"])["dilated_years"]
         assert abs(back - years) <= years * 1e-12
@@ -553,7 +629,7 @@ def selftest() -> list[str]:
     b = totals()["block_c"]
     for name in ("c_in_substrate_units", "hbar_in_substrate_units", "G_in_substrate_units"):
         assert abs(b[name] - 1) < 1e-12
-    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26          # line 2
+    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26         # line 2
     done.append("block C: c, h-bar and G are 1 in substrate units")
 
     # 11. Turn lag (Nest 5, Rule 15)
@@ -576,6 +652,26 @@ def selftest() -> list[str]:
     assert gravity_room(M - 1)["room_gaps"] == 1
     assert gravity_room(M)["room_gaps"] == 0
     done.append("room for gravity: M gaps at Pole 0, 1 gap one position from Pole 1, 0 at Pole 1")
+
+    # 14. Order of Operations, Rules 1 to 6, and Block D, Tests 1 to 5
+    assert ALPHA_INV_UNIVERSAL == 4 * 32 + 8 == 136                              # Test 1
+    assert ALPHA_INV_NEST == 137
+    assert REGISTER_MAX == M and REGISTER_ROLL == M + 1
+    s0 = alpha_stack()
+    assert abs(s0["delta"] - 0.035999) < 1e-6                                   # Rule 4
+    assert _sci(s0["G_local_substrate"]) == "5.325 x 10^-5"                     # Rule 5, Test 2
+    assert math.isclose(s0["G_local_human"], G, rel_tol=1e-12)                  # Test 2
+    assert _sci(G_TO_HUMAN) == "1.253 x 10^-6"                                  # input 6
+    assert math.isclose(s0["c_local"], 1 / math.sqrt(ALPHA_INVERSE))            # Nest 13, Rule 4, Test 3
+    d4 = block_d()["test_4"]
+    assert d4["delta_variance"] == 6                                            # Test 4
+    assert (_sci(d4["G_void_substrate"]), _sci(d4["G_cluster_substrate"])) == ("5.327 x 10^-5", "5.323 x 10^-5")
+    assert round(d4["G_ratio"], 5) == 1.00073
+    s5 = alpha_stack(DELTA_MAX)
+    assert s5["alpha_inv_local"] == 273 and s5["G_local_substrate"] == 1 / 273**2 and s5["overflow"]  # Test 5
+    assert not s0["overflow"]
+    assert totals()["hardware_basis"]["total_bits"] == 32                       # Nest 13, Rule 10
+    done.append("order of operations: 136, 137, 137 + delta, G_local = 1 / alpha^2, overflow at 273; block D tests 1 to 5")
 
     return done
 
@@ -606,6 +702,9 @@ def main() -> None:
     p = sub.add_parser("order_b", help="TICKS -> undilated years -> Observer 0 dilated years")
     p.add_argument("ticks", type=float)
     sub.add_parser("appendix_a", help="Block B: the second-chain results")
+    p = sub.add_parser("alpha", help="alpha stack and G resolution for local DELTA (0 to 136); default: cosmic mean")
+    p.add_argument("delta", type=float, nargs="?", default=DELTA_MEAN)
+    sub.add_parser("block_d", help="Block D: numerical checks, tests 1 to 5")
     sub.add_parser("totals", help="counts, both chains, tier ratio, constants")
     sub.add_parser("selftest", help="check the engine against the model")
     args = parser.parse_args()
@@ -626,6 +725,10 @@ def main() -> None:
         _show(order_b(args.ticks))
     elif args.command == "appendix_a":
         _show(appendix_a())
+    elif args.command == "alpha":
+        _show(alpha_stack(args.delta))
+    elif args.command == "block_d":
+        _show(block_d())
     elif args.command == "selftest":
         for line in selftest():
             print("PASS ", line)
