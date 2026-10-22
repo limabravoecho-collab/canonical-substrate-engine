@@ -12,6 +12,7 @@ This index summarizes the complete suite of theoretical and applied hypothesis w
 
 | File Name | Domain | Core CSE Principle / Mechanism |
 |---|---|---|
+| `TECHNOLOGY_DETERMINISTIC_CSE.md` | Computer Science / AI | Deterministic 32-bit register computing; full-stack CSE (BIOS to OS to Apps); zero-overhead networking; lossless multimedia rendering; hallucination-free LLM decoupling. |
 | `THEORY_FINE_STRUCTURE_CONSTANT.md` | Cosmology / QED | Alpha inverse as a composite register stack ($136 + 1 + \delta$), honoring Eddington's initial and final derivations. |
 | `THEORY_GRAVITY.md` | Cosmology / General Relativity | Gravity as an emergent pressure/bound-fraction gradient; $G_{local} = G_{substrate}/\alpha_{inv\_local}^2$; singularities capped via 32-bit overflow. |
 | `THEORY_DARK_ENERGY.md` | Cosmology / Expansion | Macro-cycle expansion shell vector ($M$ to $0$); free energy allocation ($M - s$); apparent acceleration via aggregate $\delta$ drift. |
