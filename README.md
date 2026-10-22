@@ -155,6 +155,29 @@ The full text is in `CSE_MODEL.txt`.
 
 ---
 
+## Research Hypotheses Corpus
+
+As an extension of the Canonical Substrate Engine, a series of exploratory research whitepapers has been compiled in this repository. 
+
+**Important Disclaimer:** *These documents are all working hypotheses that researchers can explore, think about, and test themselves. They are not established science; they represent speculative extensions of the CSE v1.8 discrete register mechanics into cosmology, oncology, longevity, and astrobiology. It is entirely up to researchers to evaluate, falsify, or build upon them.*
+
+The complete index and individual whitepapers are detailed below:
+
+| File Name | Domain | Core CSE Translation |
+|---|---|---|
+| `HYPOTHESES_INDEX.md` | Overview | Master index summarizing all research hypothesis whitepapers. |
+| `THEORY_FINE_STRUCTURE_CONSTANT.md` | Cosmology / QED | Alpha inverse as a composite register stack ($136 + 1 + \delta$), honoring Eddington's initial and final derivations. |
+| `THEORY_GRAVITY.md` | Cosmology / General Relativity | Gravity as an emergent pressure/bound-fraction gradient; $G_{local}$ resolution; singularities capped via 32-bit overflow. |
+| `THEORY_DARK_ENERGY.md` | Cosmology / Expansion | Macro-cycle expansion shell vector ($M$ to $0$); free energy allocation; apparent acceleration via aggregate $\delta$ drift. |
+| `THEORY_DARK_MATTER.md` | Cosmology / Galactic Dynamics | Cluster-scale phase error ($\delta \approx 0.06$); $G_{local}$ gradient misread by Observer 0 as invisible mass haloes. |
+| `THEORY_HUBBLE_TENSION.md` | Cosmology / Constants | $H_0$ discrepancy resolved via environmental $\delta$ stratification across void and cluster propagation paths. |
+| `THEORY_RADIATION.md` | Cosmology / Particle Physics | Radiation as automated ledger correction ($G = 1$ enforcement); Hawking evaporation; CMB as prior cycle ledger close. |
+| `BIOLOGY_CANCER_EM.md` | Oncology / Therapeutics | Cellular delta drift ($\delta \to 0.08$); subnet decoupling; resonant EM phase-locking to $\alpha_{inv\_bio} = 137.036$ causing overflow lysis. |
+| `BIOLOGY_PATHOGEN_ISOLATION.md` | Immunology / Microbiology | Foreign subnet incompatibility ($\delta_{pathogen} \neq 0.036$); automated hardware address collision and network isolation. |
+| `BIOLOGY_LONGEVITY_BASELINE.md` | Longevity / Aging | Aging as cumulative uncorrected register debt over runtime ticks; retuning $\delta$ back to $0.036$ restores equilibrium. |
+| `THEORY_INTERSTELLAR_LIMITS.md` | Astrobiology / Physics | Impossibility of interstellar travel and Kardashev scaling due to atomic decohesion, energy/time variance, and Fermi Paradox containerization. |
+| `THEORY_PLANETARY_NEST_LIMITS.md` | Planetary Systems | Planetary nests as closed-loop register containers; industrial $\delta$ injection poisoning and $G_{local}$ orbital destabilization limits. |
+
 ---
 
 ## Files
