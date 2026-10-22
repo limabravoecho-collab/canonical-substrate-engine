@@ -1,10 +1,10 @@
-# Canonical Substrate Engine (CSE) v1.7
+# Canonical Substrate Engine (CSE) v1.8
 
 A deterministic closed-loop logic model with a 2^32 cycle and an executable Python engine.
 
 **Status.** CSE is a model for study. The author does not claim that it is a theory of everything. It is published completely open for testing as one.
 
-**Version note.** The model text and the engine are at v1.7. `cse_ai_example.py`, `counter_test.c` and `EXAMPLES.md` are still at v1.3 and have not been updated. The nest numbers changed from v1.3: see "Changed in v1.6".
+**Version note.** The model text and the engine are at v1.8. `cse_ai_example.py`, `counter_test.c` and `EXAMPLES.md` are still at v1.3 and have not been updated. The nest numbers changed from v1.3: see "Changed in v1.6".
 
 ---
 
@@ -13,6 +13,7 @@ A deterministic closed-loop logic model with a 2^32 cycle and an executable Pyth
 CSE is a logic model written in three sections that are chained together. A number is stated in one section only, and the other sections refer to it.
 
 1. **Substrate.** Counts only: whole numbers of positions, transitions, ticks and energy units. No meters, no seconds.
+
 2. **Conversion bridge.** The rates and ratios that join the counts to human units.
 3. **Observer 0.** The observers, their units, their inputs and their readings.
 
@@ -38,12 +39,15 @@ CSE is a logic model written in three sections that are chained together. A numb
 
 The numbers of the model:
 
+
 ```
+
 M               = 2^31 − 1 = 2,147,483,647      the limit
 positions       = 2^31     = 2,147,483,648      0 to M
 cycle count     = 2^32     = 4,294,967,296      1 + M + 1 + M
 ticks           = 2^32 − 1 = 4,294,967,295      M + 1 + M advances of the runtime counter
 transitions     = 2^32 − 2 = 4,294,967,294      the 2 reversals are not transitions
+
 ```
 
 The full text is in `CSE_MODEL.txt`.
@@ -55,8 +59,11 @@ The full text is in `CSE_MODEL.txt`.
 **Structure**
 
 - **Three sections.** The model text is now ordered as Substrate, Conversion bridge, Observer 0. The two appendices of v1.3 are gone: their content is in Nests 7 to 10 and Blocks A to C.
+
 - **One place.** Each number and each definition is stated in one section only.
+
 - **Nest numbers changed.** Nests 0 to 5 keep their numbers. The others moved:
+
 
 | v1.3 | v1.6 |
 |---|---|
@@ -71,47 +78,80 @@ The full text is in `CSE_MODEL.txt`.
 **Numbers**
 
 - **Lifespan input.** Observer 0's lifespan estimate is now ~33.3 billion years (was ~33). It is the same estimate that the turning point input uses.
+
 - **Conversion ratio.** 1 tick = 1062 undilated years (was 1052). Every second-chain value is recomputed.
+
 - **Tier ratio.** One tick ≈ 4.536 × 10^51 Planck times (was 4.494 × 10^51).
+
 - **G.** The model and the engine both use G = 6.674 × 10^−11, certain to 4 digits.
+
 
 **New rules**
 
 - **Counts.** Everything in the substrate is a count. Measurement units begin at the conversion bridge (Global definitions).
+
 - **Tick count.** Arc 1 = M ticks, the reversal at the turn = 1 tick, Arc 2 = M ticks (Nest 2, Rule 10).
+
 - **Inert positions.** The shell is the outer edge of the energy. The energy travels across the positions. The positions do not move or stretch (Nest 4, Rule 3).
+
 - **Constant velocity.** The shell moves exactly 1 position per transition, in both arcs (Nest 4, Rule 10).
+
 - **Room for gravity.** The excess that drives gravity is at most the free fraction, `1 − s / M`. It is 0 at the turn (Nest 5, Rule 16).
+
 - **Local values.** The substrate fixes the limits and the balance. It does not fix the value at any one place (Nest 5, Rule 17).
+
 - **Mass unit.** 1 mass unit = 1 energy unit / c^2 = exactly 1 (Nest 7, Rule 4).
+
 - **Whole-sphere position.** A postulate: 1 position on the whole-sphere tier = the distance light covers in 1 tick = 7.749788... light-years (Nest 10, Rule 7).
+
 
 **Engine**
 
 - **New command.** `room`: the room for gravity at one position.
+
 - **Order of operations.** `steps` returns the standard arithmetic, the substrate form, and a check from the whole-sphere tier for the Planck length, the Planck time and c. Every row is worked from the values the rows above it show, and carries its units and the source of each input.
+
 - **Renamed output (breaking change from v1.3).** In `totals`, `appendix_b` is now `block_c`. In `appendix_a`, `origin_of_1052` is now `origin_of_1062`.
+
 - **Kept names.** The command `appendix_a` and the functions `nest8_facts` and `nest8_steps` keep their v1.3 names. They now serve Block B and Nests 7, 9 and 10.
+
 - **Self-test.** 16 checks (was 12).
+
 
 ## Changed in v1.7
 
 **Nest 5**
 
 - **Void.** A place equal to the whole-sphere value is a void. Pockets and voids now partition the sphere (Rule 5). A void with no deficit pulls no more than its surroundings (Rule 11).
+
 - **Speed time.** A second source of slow local time: contents moving faster than their surroundings, up to the step rate (Rule 18).
+
 - **Local rate.** Local state visits per tick: 1 at the whole-sphere value and at rest, below 1 under Rules 13 or 18, above 1 around them (Rule 19).
+
 - **Local invariant.** Local bound energy × local time rate = the baseline of that place. The baselines sum to the whole-sphere value (Rule 20).
+
 
 **Other**
 
 - **Nest 6, Rule 3.** At Pole 0 every place is at the whole-sphere value.
+
 - **Nest 11, Rule 5.** Observer 0 may read slow local time as a shortening of length: isotropic under Rule 13, along the motion under Rule 18.
+
 - **Cross-references** to local time now cite Rules 13, 14 and 18.
+
 
 **Engine**
 
 - `local` returns `dense matter pocket` or `void` only. The `even` result is gone (Nest 5, Rule 5).
+
+
+## Changed in v1.8
+
+**Order of Operations**
+
+- **Rule 2 (First Allocation):** The allocation mask `alpha_inv_universal = 136` is now structurally derived: 4 tiers × 32 bits + 8 control = 128 + 8 = 136 (representing register width across foundational counts plus kernel and polarity control states).
+- **Rule 5 (G Resolution):** Partitioned `G_local` cleanly into substrate units ($G_{local\_substrate} = 1 / \alpha_{inv\_local}^2 \approx 5.325135 \times 10^{-5}$) and human SI units ($G_{local\_human} = G_{local\_substrate} \times 1.253357788 \times 10^{-6} \approx 6.67430 \times 10^{-11}$) via the master chain conversion factor.
+
 
 ---
 
@@ -121,8 +161,8 @@ The full text is in `CSE_MODEL.txt`.
 
 | File | Version | What it is |
 |---|---|---|
-| `CSE_MODEL.txt` | v1.7 | The model: three sections, Nests 0 to 12, Blocks A to C. Also usable as a prompt. |
-| `cse_engine.py` | v1.7 | The model in executable form. Standard library only. |
+| `CSE_MODEL.txt` | v1.8 | The model: three sections, Nests 0 to 12, Blocks A to C. Also usable as a prompt. |
+| `cse_engine.py` | v1.8 | The model in executable form. Standard library only. |
 | `cse_ai_example.py` | v1.3 | How to wire the engine into an AI system, with comments at every wire point. |
 | `counter_test.c` | v1.3 | A real 32-bit counter, run through one full loop. |
 | `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. Its numbers use the v1.3 ratio, 1052. |
@@ -132,9 +172,11 @@ The full text is in `CSE_MODEL.txt`.
 
 ## Quick start
 
+
 ```
-python3 cse_engine.py selftest            # checks the engine against the model
-python3 cse_engine.py totals              # counts, both chains, tier ratio, constants
+
+python3 cse_engine.py selftest             # checks the engine against the model
+python3 cse_engine.py totals               # counts, both chains, tier ratio, constants
 python3 cse_engine.py state 2147483649    # state after one counted operation
 python3 cse_engine.py position 1000       # energy at one position
 python3 cse_engine.py local 0.75 1000     # dense matter pocket or void
@@ -150,6 +192,7 @@ python3 cse_engine.py reckon 3 + 4 x 2    # exact arithmetic, with the steps sho
 python3 cse_ai_example.py                 # shows what an LLM would receive
 
 gcc -O2 -o counter_test counter_test.c && ./counter_test
+
 ```
 
 Every engine command prints JSON. The engine also imports as a module: `import cse_engine as cse`.
@@ -167,6 +210,7 @@ There are two ways. They can be combined.
 If you integrate CSE into your own AI:
 
 1. **Use the LLM as a translator only.** The engine computes. The LLM puts the engine's results into words. Do not let the LLM compute, round or guess engine values.
+
 2. **Customize your prompt for your own target field.** CSE gives the structure. Your prompt gives the voice and the subject.
 3. **Add your own tiers.** Any closed cycle in your field can be mapped onto the engine as a fraction from 0 to 1. The example file maps a day and a year.
 
@@ -181,9 +225,13 @@ The engine prints full arithmetic values. Block B shows the same values cut at t
 ## Testing CSE
 
 - `selftest` checks the engine's formulas against a step-by-step walk of the loop, and checks the engine's results against the numbers printed in `CSE_MODEL.txt`: Block B, the master chain and the tier ratio.
+
 - `counter_test.c` checks the claim of Nest 12 on a real machine: 2 sign flips per cycle, M plain steps between them, 4,294,967,296 steps in the loop, and a highest counter value of 4,294,967,295.
+
 - `EXAMPLES.md` puts five measurements next to CSE quantities and states each result plainly, including the mismatches.
+
 - Block B gives every value of the second chain in all three stages, and `steps` shows every line of the master chain, so each can be checked with a calculator.
+
 
 Any reasonably skilled researcher or computer programmer should be able to test CSE and use it to its full advantage.
 
@@ -194,6 +242,7 @@ Any reasonably skilled researcher or computer programmer should be able to test 
 These are stated here so that nobody has to find them the hard way.
 
 1. **Scale.** With Nest 9, Link 1 (1 position = 1 Planck length), one loop has a maximum radius of about 3.47 × 10^−26 meters, one arc lasts about 1.16 × 10^−34 seconds, and the total energy is about 4.2 × 10^18 joules. The model assigns this loop to a smaller tier. It gives the ratio to the whole-sphere tier for time, and for length under a postulate (Nest 10, Rules 7 and 8). The size of one energy unit on the whole-sphere tier is not stated.
+
 2. **Missing formulas.** The model states, but gives no formula for: local time (Nest 5, Rules 13, 14, 18 and 19), the amount of drift from the reversal (Nest 5, Rule 9), how bound energy is divided between pockets and voids, how gravity changes with distance (Nest 5, Rule 11), and the size of the turn lag (Nest 5, Rule 15), for which it gives only a range. The value at any one place is outside the model's scope: Observer 0 finds it by measurement (Nest 5, Rule 17).
 3. **The axiom.** M = 2^31 − 1 is declared as an axiom (Nest 7, Rule 1). The match with the 32-bit register (Nest 12, Rules 4 and 5) is stated, not derived.
 4. **Statements.** Nests 8, 11 and 12 are statements. They are not calculations, and the engine does not compute them.
@@ -206,7 +255,7 @@ These are stated here so that nobody has to find them the hard way.
 11. **Turning point.** CSE turns the shell at 50% of the runtime. Observer 0's model puts the turning point at about 74.5%. Block B reads the difference as a lag, and its size is fitted from Observer 0's input, not derived (Block B, rows 1.6 to 1.8 and line 3.11).
 12. **The turn and the lag.** At the turn the room for gravity is 0, so the sphere has no dense matter pockets and no voids at that moment (Nest 5, Rule 16). The turn lag is read as the turn reaching a place late. How a place persists through the turn is not stated.
 13. **Location.** The model does not state where Observer 0 is inside the sphere.
-14. **Least settled.** Section 2 (Nests 9 and 10) and Blocks A to C are the least settled parts of v1.7.
+14. **Least settled.** Section 2 (Nests 9 and 10) and Blocks A to C are the least settled parts of v1.8.
 
 ---
 
