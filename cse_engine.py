@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_engine.py - Canonical Substrate Engine (CSE) v1.7
+cse_engine.py - Canonical Substrate Engine (CSE) v1.8
 A Deterministic Cosmological Logic Model, in executable form.
 
 This file computes only what the model defines with a number or a formula.
@@ -33,7 +33,7 @@ The engine prints full arithmetic values. Block B shows the same values
 cut at the certainty limit of alpha inverse.
 
 Use as a tool:
-  python3 cse_engine.py                 summary
+  python3 cse_engine.py                     summary
   python3 cse_engine.py state 2147483649
   python3 cse_engine.py position 1000
   python3 cse_engine.py local 0.75 1000
@@ -57,19 +57,19 @@ from fractions import Fraction
 # --------------------------------------------------
 # SECTION 1: GLOBAL DEFINITIONS & COUNTING CONVENTIONS
 # --------------------------------------------------
-M = 2**31 - 1                 # LIMIT: 2,147,483,647
-POSITIONS = 2**31             # positions 0 to M
-CYCLE_COUNT = 2**32           # counted operations per cycle
-TICK_COUNT = 2**32 - 1        # highest value of the runtime counter (Nest 2, Rule 9)
-TRANSITION_COUNT = 2**32 - 2  # the 2 reversals are not transitions
+M = 2**31 - 1                         # LIMIT: 2,147,483,647
+POSITIONS = 2**31                     # positions 0 to M
+CYCLE_COUNT = 2**32                   # counted operations per cycle
+TICK_COUNT = 2**32 - 1                # highest value of the runtime counter (Nest 2, Rule 9)
+TRANSITION_COUNT = 2**32 - 2          # the 2 reversals are not transitions
 
 # --------------------------------------------------
 # SECTION 3, BLOCK A: INPUTS 4 TO 6 (c, h-bar and G in human units)
 # They are placed here because the master chain is built from them.
 # --------------------------------------------------
-C = 299792458.0               # input 4: meters per second (exact by definition)
-HBAR = 1.054571817e-34        # input 5: joule seconds (exact by definition)
-G = 6.674e-11                 # input 6: m^3 / (kg s^2) (measured, certain to 4 digits)
+C = 299792458.0                       # input 4: meters per second (exact by definition)
+HBAR = 1.054571817e-34                # input 5: joule seconds (exact by definition)
+G = 6.674e-11                         # input 6: m^3 / (kg s^2) (measured, certain to 4 digits)
 
 # --------------------------------------------------
 # SECTION 2, NEST 9: THE MASTER CHAIN (RULE 3)
@@ -138,7 +138,7 @@ def appendix_a(current_age: float = CURRENT_AGE_YEARS,
     remaining = order_b(TICK_COUNT - age["ticks"])          # row 1.5
     cse_turn = order_b(2**31)                               # row 1.6
     observer_turn = order_a(current_age + expansion_ends_in)  # row 1.7
-    lag = order_b(observer_turn["ticks"] - 2**31)           # row 1.8
+    lag = order_b(observer_turn["ticks"] - 2**31)            # row 1.8
     return {
         "inputs_taken_as_given": {
             "current_age_years": current_age,
@@ -186,10 +186,10 @@ def _state(op: int, m: int) -> dict:
     """State after counted operation number `op` (1, 2, 3, ...), for limit m.
 
     Order inside one cycle (Nest 0, CYCLE COUNT):
-      op 1            : P at [Kernel-0]      (polarity switch)
-      op 2 .. m+1     : m increments         (Phase 1)
-      op m+2          : P at [Kernel-S0]     (polarity return)
-      op m+3 .. 2m+2  : m decrements         (Phase 2)
+      op 1                : P at [Kernel-0]     (polarity switch)
+      op 2 .. m+1         : m increments         (Phase 1)
+      op m+2              : P at [Kernel-S0]     (polarity return)
+      op m+3 .. 2m+2      : m decrements         (Phase 2)
     The loop is closed: op 2m+3 is op 1 of the next cycle.
 
     Tick (Global definitions, TICK; Nest 2, Rule 10): the runtime counter is at 0 at op 1 and advances
@@ -262,7 +262,7 @@ def _state(op: int, m: int) -> dict:
 def state(op: int) -> dict:
     """State of the model after counted operation `op`, with Observer 0 units.
 
-    planck_tier       : the master chain (Nest 9, Rule 3).
+    planck_tier        : the master chain (Nest 9, Rule 3).
     whole_sphere_tier : the second chain (Nest 10, Order B), from the tick.
     """
     st = _state(op, M)
@@ -390,7 +390,7 @@ def totals() -> dict:
         "tick_count": TICK_COUNT,
         "transition_count": TRANSITION_COUNT,
         "reversals_per_cycle": 2,
-        "tick_count_parts": {                                # Nest 2, Rule 10
+        "tick_count_parts": {                       # Nest 2, Rule 10
             "arc_1": M,
             "reversal_at_kernel_s0": 1,
             "arc_2": M,
@@ -420,7 +420,7 @@ def totals() -> dict:
             "total_runtime_ticks": TICK_COUNT,
             "total_runtime_undilated_years": runtime["undilated_years"],
             "total_runtime_dilated_years": runtime["dilated_years"],
-            "light_years_per_position": LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION,   # Nest 10, Rule 7
+            "light_years_per_position": LIGHT_YEARS_PER_WHOLE_SPHERE_POSITION,    # Nest 10, Rule 7
         },
         "tier_ratio": {
             "undilated_seconds_per_tick": UNDILATED_SECONDS_PER_TICK,
@@ -467,7 +467,7 @@ def selftest() -> list[str]:
         assert st["bound_units"] + st["free_units"] == m
         assert st["tick"] == k - 1
     assert sum(1 for operation, _ in walk if operation == "P") == 2
-    for k in range(2, 2 * m + 3):                          # Nest 4, Rule 10: constant velocity
+    for k in range(2, 2 * m + 3):                        # Nest 4, Rule 10: constant velocity
         now, before = _state(k, m), _state(k - 1, m)
         assert abs(now["position"] - before["position"]) == (0 if now["operation"] == "P" else 1)
     nxt = _state(2 * m + 3, m)
@@ -515,13 +515,13 @@ def selftest() -> list[str]:
 
     # 7. Block B, against the values printed in the model text
     a = appendix_a()
-    assert int(a["current_age"]["ticks"]) == 1_780_693_774                      # row 1.1
+    assert int(a["current_age"]["ticks"]) == 1_780_693_774                        # row 1.1
     assert round(a["expected_lifespan"]["ticks"], -1) == 4_296_891_500          # row 1.2
     assert a["corrected_lifespan"]["undilated_years"] == 4_561_255_267_290      # row 1.3
     assert round(a["corrected_lifespan"]["dilated_years"], -2) == 33_285_087_800  # row 1.3
-    assert round(a["mismatch"]["ticks"], -1) == 1_924_200                       # row 1.4
-    assert round(a["mismatch"]["dilated_years"], -2) == 14_912_200              # row 1.4
-    assert int(a["remaining"]["ticks"]) == 2_514_273_520                        # row 1.5
+    assert round(a["mismatch"]["ticks"], -1) == 1_924_200                         # row 1.4
+    assert round(a["mismatch"]["dilated_years"], -2) == 14_912_200               # row 1.4
+    assert int(a["remaining"]["ticks"]) == 2_514_273_520                         # row 1.5
     assert round(a["remaining"]["dilated_years"], -2) == 19_485_087_800         # row 1.5
     assert abs(a["percent_of_runtime"]["current"] - 41.4600077) < 1e-7          # line 2.2
     assert abs(a["percent_of_runtime"]["remaining"] - 58.5399922) < 1e-7        # line 2.1
@@ -531,10 +531,10 @@ def selftest() -> list[str]:
     assert t["cse_turn_of_the_shell"]["undilated_years"] == 2_280_627_634_176   # row 1.6
     assert round(t["cse_turn_of_the_shell"]["dilated_years"], -1) == 16_642_543_910  # row 1.6
     assert round(t["observer_0_turning_point"]["ticks"], -1) == 3_200_087_360   # row 1.7
-    assert round(t["lag"]["ticks"], -1) == 1_052_603_720                        # row 1.8
+    assert round(t["lag"]["ticks"], -1) == 1_052_603_720                          # row 1.8
     assert round(t["lag"]["dilated_years"], -1) == 8_157_456_090                # row 1.8
     assert abs(t["lag_percent_of_runtime"] - 24.507840) < 1e-6                  # line 2.3
-    assert abs(t["observer_0_percent_of_runtime"] - 74.507840) < 1e-6           # line 2.4
+    assert abs(t["observer_0_percent_of_runtime"] - 74.507840) < 1e-6            # line 2.4
     done.append("block B: rows 1.1 to 1.8 and lines 2.1 to 2.4 match the model text")
 
     # 8. Order A and Order B return the same numbers (Block B, line 3.5)
@@ -553,7 +553,7 @@ def selftest() -> list[str]:
     b = totals()["block_c"]
     for name in ("c_in_substrate_units", "hbar_in_substrate_units", "G_in_substrate_units"):
         assert abs(b[name] - 1) < 1e-12
-    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26         # line 2
+    assert round(b["c_meters_per_undilated_second"], 2) == 2_187_691.26          # line 2
     done.append("block C: c, h-bar and G are 1 in substrate units")
 
     # 11. Turn lag (Nest 5, Rule 15)
@@ -588,7 +588,7 @@ def _show(data) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.7")
+    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.8")
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("state", help="state after counted operation OP (1 or larger)")
     p.add_argument("op", type=int)
