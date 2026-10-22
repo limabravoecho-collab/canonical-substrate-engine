@@ -1,3 +1,5 @@
+# THEORY_FINE_STRUCTURE_CONSTANT.md
+
 ## SECTION 1: OBSERVER 0 OBSERVATION
 Observer 0 measures the fine-structure constant ($\alpha$) as approximately $1/137.035999$, treating it as an immutable fundamental physical constant governing electromagnetic coupling strength. Within standard physics, its exact value remains an unexplained empirical input parameter. Historically, Sir Arthur Eddington famously championed $136$ as the fundamental inverse fine-structure number based on early combinatorial and statistical reasoning, later adjusting his derivation to $137$ when empirical measurements forced a refinement—a foundational intuition that prefigured discrete register allocation.
 
