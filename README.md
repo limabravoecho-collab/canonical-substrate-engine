@@ -10,9 +10,10 @@ A deterministic closed-loop logic model with a 2^32 cycle and an executable Pyth
 4. **Tri-Domain Architecture:** It draws its framework from Computer Science (CS), Electrical Engineering (EE), and Natural System Mechanics.
 5. **Completely Open (No Black Boxes):** There are no hidden variables, mysterious force fields, multiverses for anything to leak in or out, extra-dimensions, science fiction analogies/tropes, or black-box abstractions. Everything is wide open and transparent.
 6. **Cross-Disciplinary Bridge:** Specialists (such as medical doctors, biologists, or astrophysicists) may encounter unfamiliar terminology rooted in CS and EE primitives. An open mind across domains is essential to see how disparate systems map to discrete register states.
-7. **Not a Theory of Everything:** I do not claim this is a definitive Theory of Everything, but others are welcome to explore, test, and stress-test it as one.
-8. **Reverse-Engineering Pattern Match:** This is not proposed as the ultimate, absolute "true nature" of the universe. It is a reverse-engineered pattern-matching model framed intentionally in CS, EE, and systems terms.
-9. **Radical Simplicity:** It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up. 
+7. **Not a Physics Model:** This is a discrete computational and systems architecture—not a traditional physics model. I am not offering a new interpretation of spacetime or quantum mechanics; I am providing a closed-loop arithmetic framework. It is up to physicists or domain experts to test the register arithmetic and determine how it maps to their fields, if they choose to do so.
+8. **Not a Theory of Everything:** I do not claim this is a definitive Theory of Everything, but others are welcome to explore, test, and stress-test it as one.
+9. **Reverse-Engineering Pattern Match:** This is not proposed as the ultimate, absolute "true nature" of the universe. It is a reverse-engineered pattern-matching model framed intentionally in CS, EE, and systems terms.
+10. **Radical Simplicity:** It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up. 
 
 *Break it, test it, or build upon it—the ledger is open.*
 
