@@ -2,7 +2,19 @@
 
 A deterministic closed-loop logic model with a 2^32 cycle and an executable Python engine.
 
-**Status.** CSE is a model for study. The author does not claim that it is a theory of everything. It is published completely open for testing as one.
+## A Note from the Author
+
+1. **Built in Logic Isolation:** This model was developed in complete isolation from outside academic bias, groupthink, or mainstream theoretical trends. 
+2. **Empiricals as Checksums:** Because it was built in isolation, real-world scientific empiricals were never used as input knobs to curve-fit the model; instead, they were used strictly as external *checksums* to test if the closed-loop logic held true.
+3. **Pure Primitives & Zero Tolerance for Handwaving:** It is constructed entirely on bare logic, integer numbers, finites, arithmetic, and polarity change. Numerology, mysticism, and handwaving were aggressively purged; in a strict closed-loop system, ungrounded assumptions immediately break the math.
+4. **Tri-Domain Architecture:** It draws its framework from Computer Science (CS), Electrical Engineering (EE), and Natural System Mechanics.
+5. **Completely Open (No Black Boxes):** There are no hidden variables, mysterious force fields, multiverses, extra-dimensions, science fiction analogies/tropes, or black-box abstractions. Everything is wide open and transparent.
+6. **Cross-Disciplinary Bridge:** Specialists (such as medical doctors, biologists, or astrophysicists) may encounter unfamiliar terminology rooted in CS and EE primitives. An open mind across domains is essential to see how disparate systems map to discrete register states.
+7. **Not a Theory of Everything:** I do not claim this is a definitive Theory of Everything, but others are welcome to explore, test, and stress-test it as one.
+8. **Reverse-Engineering Pattern Match:** This is not proposed as the ultimate, absolute "true nature" of the universe. It is a reverse-engineered pattern-matching model framed intentionally in CS, EE, and systems terms.
+9. **Radical Simplicity:** It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up. 
+
+*Break it, test it, or build upon it—the ledger is open.*
 
 **Version note.** The model text and the engine are at v1.8. `cse_ai_example.py`, `counter_test.c` and `EXAMPLES.md` are still at v1.3 and have not been updated. The nest numbers changed from v1.3: see "Changed in v1.6".
 
