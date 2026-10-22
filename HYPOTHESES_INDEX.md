@@ -19,6 +19,8 @@ This index summarizes the complete suite of theoretical and applied hypothesis w
 | `THEORY_DARK_MATTER.md` | Cosmology / Galactic Dynamics | Cluster-scale phase error ($\delta \approx 0.06$); $G_{local}$ gradient misread by Observer 0 as invisible mass haloes. |
 | `THEORY_HUBBLE_TENSION.md` | Cosmology / Cosmological Constants | $H_0$ discrepancy resolved via environmental $\delta$ stratification (voids vs. dense cluster propagation speeds). |
 | `THEORY_RADIATION.md` | Cosmology / Particle Physics | Radiation as automated ledger correction ($G = 1$ enforcement); Hawking evaporation; CMB as prior cycle ledger close. |
+| `HYPOTHESIS_THERMODYNAMIC_TRANSLATION.md` | Thermodynamics / Systems Mechanics | Phenomenological inversion of classical laws; temperature, heat, and cold as Observer 0 UI modulation metrics rather than native substrate properties. |
+| `THEORY_VOIDS.md` | Cosmology / Spatial Mechanics | Voids as low-modulation register zones ($s/M \to 0$); thermal sparsity UI rendering; boundary equilibrium mechanics. |
 | `BIOLOGY_CANCER_EM.md` | Oncology / Therapeutics | Cellular delta drift ($\delta \to 0.08$); subnet decoupling; resonant EM phase-locking to $\alpha_{inv\_bio} = 137.036$ causing overflow lysis. |
 | `BIOLOGY_PATHOGEN_ISOLATION.md` | Immunology / Microbiology | Foreign subnet incompatibility ($\delta_{pathogen} \neq 0.036$); automated hardware address collision and network isolation. |
 | `BIOLOGY_LONGEVITY_BASELINE.md` | Longevity / Aging | Aging as cumulative uncorrected register debt over runtime ticks; retuning $\delta$ back to $0.036$ restores equilibrium. |
