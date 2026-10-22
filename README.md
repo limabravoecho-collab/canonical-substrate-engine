@@ -166,6 +166,7 @@ The complete index and individual whitepapers are detailed below:
 | File Name | Domain | Core CSE Translation |
 |---|---|---|
 | `HYPOTHESES_INDEX.md` | Overview | Master index summarizing all research hypothesis whitepapers. |
+| `TECHNOLOGY_DETERMINISTIC_CSE.md` | Computer Science / AI | Deterministic 32-bit register computing; full-stack CSE (BIOS to OS to Apps); zero-overhead networking; lossless multimedia rendering; hallucination-free LLM decoupling. |
 | `THEORY_FINE_STRUCTURE_CONSTANT.md` | Cosmology / QED | Alpha inverse as a composite register stack ($136 + 1 + \delta$), honoring Eddington's initial and final derivations. |
 | `THEORY_GRAVITY.md` | Cosmology / General Relativity | Gravity as an emergent pressure/bound-fraction gradient; $G_{local}$ resolution; singularities capped via 32-bit overflow. |
 | `THEORY_DARK_ENERGY.md` | Cosmology / Expansion | Macro-cycle expansion shell vector ($M$ to $0$); free energy allocation; apparent acceleration via aggregate $\delta$ drift. |
