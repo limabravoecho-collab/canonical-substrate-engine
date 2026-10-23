@@ -24,6 +24,7 @@ This index summarizes the complete suite of theoretical and applied hypothesis w
 | `BIOLOGY_CANCER_EM.md` | Oncology / Therapeutics | Cellular delta drift ($\delta \to 0.08$); subnet decoupling; resonant EM phase-locking to $\alpha_{inv\_bio} = 137.036$ causing overflow lysis. |
 | `BIOLOGY_PATHOGEN_ISOLATION.md` | Immunology / Microbiology | Foreign subnet incompatibility ($\delta_{pathogen} \neq 0.036$); automated hardware address collision and network isolation. |
 | `BIOLOGY_LONGEVITY_BASELINE.md` | Longevity / Aging | Aging as cumulative uncorrected register debt over runtime ticks; retuning $\delta$ back to $0.036$ restores equilibrium. |
+| `BIOLOGY_PLACEBO_BUFFER.md` | Biology / Cognitive Mechanics | Cognitive buffer flushes and register resets as mechanical placebo operations; practical protocols for emotional trauma, physical trauma, addiction, and chronic immune drift. |
 | `THEORY_INTERSTELLAR_LIMITS.md` | Astrobiology / Physics | Impossibility of interstellar travel and Kardashev scaling due to atomic decohesion, energy/time variance, and Fermi Paradox containerization. |
 | `THEORY_PLANETARY_NEST_LIMITS.md` | Planetary Systems | Planetary nests as closed-loop register containers; industrial $\delta$ injection poisoning and $G_{local}$ orbital destabilization limits. |
 
