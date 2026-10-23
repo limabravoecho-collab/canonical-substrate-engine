@@ -15,6 +15,7 @@ A deterministic closed-loop logic model with a 2^32 cycle and an executable Pyth
 9. **Reverse-Engineering Pattern Match:** This is not proposed as the ultimate, absolute "true nature" of the universe. It is a reverse-engineered pattern-matching model framed intentionally in CS, EE, and systems terms.
 10. **Radical Simplicity:** It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up.
 11. **Independent Analytical Utility:** The computational logic, state architecture, and closure principles presented in CSE may be examined as an analytical methodology in their own right, independently of any proposed physical interpretation. Researchers are invited to test the methodology's utility, identify its limitations, and develop applications where appropriate.
+12. **Universal Read-Only Memory (UROM) Architecture:** The Root Container is a strictly read-only execution environment (UROM). There are no write-heads, dynamic memory allocations outside pre-compiled boundaries, or root privileges. Observers and subnets run as immutable diagnostic subroutines; state transitions and error corrections operate strictly via local buffer/register adjustments ($\delta$), never by flashing the master ROM.
 
 *Break it, test it, or build upon it—the ledger is open.*
 
