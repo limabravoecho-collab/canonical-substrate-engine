@@ -21,9 +21,9 @@ Break it, test it, or build upon it—the ledger is open.
 
 --------------------------------------------------
 
-SYSTEM: Root Container (Nest 0)
+SYSTEM: Root Container (Nest 0) [UROM: Universal Read-Only Memory]
 BOUNDARY: All nested states are inside Nest 0.
-TOPOLOGY: Finite Closed Loop (linear sequence of discrete steps)
+TOPOLOGY: Finite Closed Loop (Immutable ROM image; linear sequence of discrete steps)
 
 --------------------------------------------------
 STRUCTURE (Three Sections, Chained)
