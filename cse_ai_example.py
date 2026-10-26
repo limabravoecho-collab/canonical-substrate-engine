@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.7)
+cse_ai_example.py - how to wire cse_engine.py into an AI system (CSE v1.9)
 
 THE RULE
     The engine computes. The LLM only translates.
@@ -125,15 +125,20 @@ def engine_line(now: datetime | None = None, words: bool = True) -> str:
 # WIRE POINT 4: DIRECT ENGINE QUESTIONS
 # For questions about the model itself, call the engine and hand the LLM the
 # exact result. The LLM never does this arithmetic.
-#   "totals"          counts, both chains, tier ratio, constants
+#   "totals"          counts, both chains, tier ratio, constants,
+#                     time-rate bounds and the stop-limit statement (v1.9)
 #   "state N"         state after counted operation N
 #   "position S"      energy at position S
 #   "local V S"       dense matter pocket or void (Nest 5)
+#   "regime V S"      below / at / above equilibrium label (Nest 3, Rule 7)
+#   "rate V S"        local time rate direction (Nest 5, Rule 19)
 #   "lag R"           minimum turn lag for a place at radius R (Nest 5, Rule 15)
 #   "room S"          room for gravity when the shell is at position S (Nest 5, Rule 16)
 #   "order_a YEARS"   Observer 0 dilated years -> undilated years -> ticks (Nest 10)
 #   "order_b TICKS"   ticks -> undilated years -> Observer 0 dilated years (Nest 10)
 #   "appendix_a"      Block B: the second-chain results (the command keeps its earlier name)
+#   "block_d"         Block D: numerical checks, Tests 1 to 5
+#   "alpha [DELTA]"   alpha stack and G resolution at a local delta (default: cosmic mean)
 # ==================================================
 def engine_answer(query: str) -> str | None:
     """Return an exact ENGINE block for an engine query, or None if it is not one."""
@@ -143,6 +148,10 @@ def engine_answer(query: str) -> str | None:
             result = cse.totals()
         elif parts == ["appendix_a"]:
             result = cse.appendix_a()
+        elif parts == ["block_d"]:
+            result = cse.block_d()
+        elif parts == ["alpha"]:
+            result = cse.alpha_stack()
         elif len(parts) == 2 and parts[0] == "state":
             result = cse.state(int(parts[1]))
         elif len(parts) == 2 and parts[0] == "position":
@@ -155,8 +164,14 @@ def engine_answer(query: str) -> str | None:
             result = cse.order_a(float(parts[1]))
         elif len(parts) == 2 and parts[0] == "order_b":
             result = cse.order_b(float(parts[1]))
+        elif len(parts) == 2 and parts[0] == "alpha":
+            result = cse.alpha_stack(float(parts[1]))
         elif len(parts) == 3 and parts[0] == "local":
             result = cse.local(float(parts[1]), int(parts[2]))
+        elif len(parts) == 3 and parts[0] == "regime":
+            result = cse.regime(float(parts[1]), int(parts[2]))
+        elif len(parts) == 3 and parts[0] == "rate":
+            result = cse.local_rate(float(parts[1]), int(parts[2]))
         else:
             return None
     except ValueError as e:
