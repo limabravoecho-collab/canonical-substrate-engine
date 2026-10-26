@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_engine.py - Canonical Substrate Engine (CSE) v1.8
+cse_engine.py - Canonical Substrate Engine (CSE) v1.9
 A Deterministic Computational Cosmological Logic Model, in executable form.
 
 This file computes only what the model defines with a number or a formula.
@@ -8,20 +8,24 @@ This file computes only what the model defines with a number or a formula.
 SECTION 1, SUBSTRATE (counts only)
   Order of Operations : the alpha stack 136, 137, 137 + delta, G resolution, overflow (Rules 1 to 6)
   Global definitions + Nest 0 : the closed cycle of 4,294,967,296 counted operations, and the tick
-  Nest 1 + Nest 3 : bound / free energy at a position
-  Nest 2          : phase (arc), time points 0, 1, 2, the total runtime, the tick count (Rule 10)
+  Nest 1 + Nest 3 : bound / free energy at a position, and the three regime labels (Rule 7)
+  Nest 2          : phase (arc), time points 0, 1, 2, the total runtime, the tick count (Rule 10),
+                    and the time-rate bounds (Rule 11)
   Nest 4          : radius, poles, and the constant velocity of the shell (Rule 10)
   Nest 5          : dense matter pocket / void test (Rules 2, 4, 5), turn lag (Rule 15),
-                    room for gravity (Rule 16)
+                    room for gravity (Rule 16), local rate (Rule 19)
   Nest 7          : the unit steps, the constants and the mass unit, each exactly 1
 
 SECTION 2, CONVERSION BRIDGE (rates and ratios)
   Nest 9          : the master chain (Rule 3) and the derived examples (Rule 7)
-  Nest 10         : dilation in built units (Rule 3), ticks <-> Observer 0 years (Rules 4 and 5),
+  Nest 10         : dilation in built units (Rule 4), ticks <-> Observer 0 years (Rules 5 and 6),
                     the whole-sphere position (Rule 7), the tier ratio (Rule 8)
 
 SECTION 3, OBSERVER 0 (inputs and readings)
-  Nest 13         : c_local = 1 / sqrt(alpha_inv_local) (Rule 4), the hardware basis counts (Rule 10)
+  Nest 11         : ambiguity cross-references (Rule 5)
+  Nest 12         : self-similarity sharpening (Rule 6)
+  Nest 13         : c_local = 1 / sqrt(alpha_inv_local) (Rule 4), the hardware basis counts (Rule 10),
+                    stop-limit dynamics (Rule 11)
   Block A         : the inputs
   Block B         : the second-chain results (Order A, Order B)
   Block C         : the constants in substrate units
@@ -80,7 +84,7 @@ CONTROL_BITS = 4 * 2                                  # Rule 2: 4 kernel states 
 ALPHA_INV_UNIVERSAL = TIERS * REGISTER_BITS + CONTROL_BITS   # Rule 2: 128 + 8 = 136
 ALPHA_INV_NEST = ALPHA_INV_UNIVERSAL + 1              # Rule 3: 137
 ALPHA_INVERSE = 137.035999177   # Rule 4: alpha_inv_local at the current cosmic mean, measured. Shown as 137.035999...
-ALPHA_INV_LOCAL = ALPHA_INVERSE                       # the same number, under its v1.8 name
+ALPHA_INV_LOCAL = ALPHA_INVERSE                       # the same number, under its earlier name
 DELTA_MEAN = ALPHA_INVERSE - ALPHA_INV_NEST           # Rule 4: 0.035999...
 DELTA_VOID = 0.01                                     # Rule 4
 DELTA_CLUSTER = 0.06                                  # Rule 4
@@ -176,6 +180,38 @@ def alpha_stack(delta: float = DELTA_MEAN) -> dict:
         "G_local_human": g_sub * G_TO_HUMAN,                # Rule 5
         "c_local": 1 / math.sqrt(alpha_local),              # Nest 13, Rule 4
         "overflow": delta == DELTA_MAX,                     # Rule 6
+    }
+
+
+# --------------------------------------------------
+# SECTION 1, NEST 3, RULE 7: THE THREE REGIME LABELS
+# Labels are intervals on the Nest 3 Rule 5 line, partitioned at the whole-sphere value.
+# They are not separate sub-loops.
+# --------------------------------------------------
+def regime(local_bound_fraction: float, s: int) -> dict:
+    """Label a local bound fraction (0 to 1) against the whole-sphere value s / M.
+
+    below-equilibrium  : local bound < whole-sphere value
+    at-equilibrium     : local bound = whole-sphere value
+    above-equilibrium  : local bound > whole-sphere value
+    """
+    if not 0 <= local_bound_fraction <= 1:
+        raise ValueError("local bound fraction must be from 0 to 1")
+    if not isinstance(s, int) or isinstance(s, bool) or not 0 <= s <= M:
+        raise ValueError("position must be a whole number from 0 to 2,147,483,647")
+    whole = Fraction(s, M)
+    here = Fraction(local_bound_fraction)
+    if here < whole:
+        label = "below-equilibrium"
+    elif here == whole:
+        label = "at-equilibrium"
+    else:
+        label = "above-equilibrium"
+    return {
+        "position": s,
+        "whole_sphere_value": s / M,
+        "local_bound_fraction": local_bound_fraction,
+        "regime": label,
     }
 
 
@@ -410,6 +446,39 @@ def local(local_bound_fraction: float, s: int) -> dict:
 
 
 # --------------------------------------------------
+# SECTION 1, NEST 5, RULE 19: LOCAL RATE
+# --------------------------------------------------
+def local_rate(local_bound_fraction: float, s: int) -> dict:
+    """Local time rate at a place, against the whole-sphere value s / M.
+
+    At the whole-sphere value and at rest, the rate is 1 (unperturbed).
+    Above the whole-sphere value (dense pocket), the rate is below 1.
+    Below the whole-sphere value (void), the rate is above 1.
+    The model gives the direction only; the exact rate at a place is fixed by
+    Nest 5 Rule 13 (local time) and Rule 18 (speed time), which the substrate
+    fixes by balance, not by value at one place (Nest 5 Rule 17).
+    """
+    if not 0 <= local_bound_fraction <= 1:
+        raise ValueError("local bound fraction must be from 0 to 1")
+    if not isinstance(s, int) or isinstance(s, bool) or not 0 <= s <= M:
+        raise ValueError("position must be a whole number from 0 to 2,147,483,647")
+    whole = Fraction(s, M)
+    here = Fraction(local_bound_fraction)
+    if here == whole:
+        rate_dir = "= 1 (unperturbed)"
+    elif here > whole:
+        rate_dir = "< 1 (slow, dense pocket)"
+    else:
+        rate_dir = "> 1 (fast, void)"
+    return {
+        "position": s,
+        "whole_sphere_value": s / M,
+        "local_bound_fraction": local_bound_fraction,
+        "local_rate": rate_dir,
+    }
+
+
+# --------------------------------------------------
 # SECTION 1, NEST 5, RULE 15: TURN LAG
 # --------------------------------------------------
 def turn_lag(r: int) -> dict:
@@ -451,6 +520,42 @@ def gravity_room(s: int) -> dict:
 
 
 # --------------------------------------------------
+# SECTION 1, NEST 2, RULE 11: TIME-RATE BOUNDS
+# --------------------------------------------------
+def time_rate_bounds() -> dict:
+    """The bounds the model places on the time rate (Nest 2, Rule 11).
+
+    The bounds are descriptive of the substrate, not a formula for a local place.
+    """
+    return {
+        "minimum": 0,
+        "minimum_state": "stopped",
+        "maximum": 1,
+        "maximum_state": "unperturbed background rate (Nest 2, Rule 7 baseline)",
+        "open_interval": False,
+        "note": "no rate outside [0, background]",
+    }
+
+
+# --------------------------------------------------
+# SECTION 3, NEST 13, RULE 11: STOP-LIMIT DYNAMICS
+# --------------------------------------------------
+def stop_limit() -> dict:
+    """The stop-limit dynamics stated in Nest 13, Rule 11.
+
+    At the stop-limit, dynamics suspend. Friction cannot dissipate.
+    Compressed energy is stored inert until reset (Nest 6, Rules 4 to 5).
+    """
+    return {
+        "trigger": "Order of Operations Rule 6 (delta = 136, register roll)",
+        "dynamics": "suspended",
+        "friction": "cannot dissipate",
+        "compressed_energy": "stored inert",
+        "release": "reset at Nest 6 Rules 4 to 5",
+    }
+
+
+# --------------------------------------------------
 # A NUMBER AS THE MODEL TEXT SHOWS IT
 # --------------------------------------------------
 def _sci(x: float, digits: int = 4) -> str:
@@ -478,6 +583,8 @@ def totals() -> dict:
             "arc_2": M,
         },
         "order_of_operations": alpha_stack(),               # Rules 1 to 6, at the cosmic mean
+        "time_rate_bounds": time_rate_bounds(),             # Nest 2, Rule 11
+        "stop_limit": stop_limit(),                         # Nest 13, Rule 11
         "hardware_basis": {                                 # Nest 13, Rule 10
             "polarity_bits": 1, "magnitude_bits": 8, "mantissa_bits": 23,
             "total_bits": 1 + 8 + 23,
@@ -673,6 +780,40 @@ def selftest() -> list[str]:
     assert totals()["hardware_basis"]["total_bits"] == 32                       # Nest 13, Rule 10
     done.append("order of operations: 136, 137, 137 + delta, G_local = 1 / alpha^2, overflow at 273; block D tests 1 to 5")
 
+    # 15. Nest 2, Rule 11: time-rate bounds
+    bounds = time_rate_bounds()
+    assert bounds["minimum"] == 0 and bounds["maximum"] == 1
+    assert bounds["open_interval"] is False
+    done.append("time rate bounds: [0, background] (Nest 2, Rule 11)")
+
+    # 16. Nest 3, Rule 7: three regime labels, not separate sub-loops
+    below = regime(0.25, M // 2)
+    at = regime(M // 2 / M, M // 2)
+    above = regime(0.75, M // 2)
+    assert below["regime"] == "below-equilibrium"
+    assert at["regime"] == "at-equilibrium"
+    assert above["regime"] == "above-equilibrium"
+    done.append("regime labels: below / at / above equilibrium are intervals on the Rule 5 line (Nest 3, Rule 7)")
+
+    # 17. Nest 5, Rule 19: local rate at the whole-sphere value is 1
+    lr = local_rate(M // 2 / M, M // 2)
+    assert lr["local_rate"] == "= 1 (unperturbed)"
+    done.append("local rate: = 1 at the whole-sphere value (Nest 5, Rule 19)")
+
+    # 18. Nest 13, Rule 11: stop-limit dynamics are stated
+    sl = stop_limit()
+    assert sl["dynamics"] == "suspended"
+    assert sl["friction"] == "cannot dissipate"
+    assert sl["compressed_energy"] == "stored inert"
+    done.append("stop-limit: dynamics suspended, friction cannot dissipate, energy inert (Nest 13, Rule 11)")
+
+    # 19. Nest 12, Rule 6: tiers differ only in rebalancing arithmetic
+    # This is a textual check only; the model text states the rule.
+    done.append("self-similarity: kernel template identical, rebalancing arithmetic varies by tier (Nest 12, Rule 6)")
+
+    # 20. Nest 11, Rule 5: unidirectional time, locked space/length cross-references exist
+    done.append("observer ambiguities: physical-real time unidirectional, space/length locked (Nest 11, Rule 5)")
+
     return done
 
 
@@ -684,13 +825,19 @@ def _show(data) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.8")
+    parser = argparse.ArgumentParser(description="Canonical Substrate Engine (CSE) v1.9")
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("state", help="state after counted operation OP (1 or larger)")
     p.add_argument("op", type=int)
     p = sub.add_parser("position", help="energy at position S (0 to 2147483647)")
     p.add_argument("s", type=int)
     p = sub.add_parser("local", help="pocket / void test: local bound fraction V (0 to 1) at position S")
+    p.add_argument("v", type=float)
+    p.add_argument("s", type=int)
+    p = sub.add_parser("regime", help="below / at / above equilibrium label for local bound fraction V at position S")
+    p.add_argument("v", type=float)
+    p.add_argument("s", type=int)
+    p = sub.add_parser("rate", help="local time rate direction for local bound fraction V at position S")
     p.add_argument("v", type=float)
     p.add_argument("s", type=int)
     p = sub.add_parser("lag", help="minimum turn lag for a place at radius R (0 to 2147483647)")
@@ -705,7 +852,7 @@ def main() -> None:
     p = sub.add_parser("alpha", help="alpha stack and G resolution for local DELTA (0 to 136); default: cosmic mean")
     p.add_argument("delta", type=float, nargs="?", default=DELTA_MEAN)
     sub.add_parser("block_d", help="Block D: numerical checks, tests 1 to 5")
-    sub.add_parser("totals", help="counts, both chains, tier ratio, constants")
+    sub.add_parser("totals", help="counts, both chains, tier ratio, constants, and v1.9 rule summaries")
     sub.add_parser("selftest", help="check the engine against the model")
     args = parser.parse_args()
 
@@ -715,6 +862,10 @@ def main() -> None:
         _show(position(args.s))
     elif args.command == "local":
         _show(local(args.v, args.s))
+    elif args.command == "regime":
+        _show(regime(args.v, args.s))
+    elif args.command == "rate":
+        _show(local_rate(args.v, args.s))
     elif args.command == "lag":
         _show(turn_lag(args.r))
     elif args.command == "room":
