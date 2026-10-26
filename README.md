@@ -102,7 +102,7 @@ The complete index and individual whitepapers are detailed below:
 | `CSE_MODEL.txt` | v1.9 | The model: three sections, Nests 0 to 13, Blocks A to D. Also usable as a prompt. |
 | `cse_engine.py` | v1.9 | The model in executable form. Standard library only. |
 | `cse_ai_example.py` | v1.9 | How to wire the engine into an AI system, with comments at every wire point. |
-| `counter_test.c` | v1.3 | A real 32-bit counter, run through one full loop. |
+| `counter_test.c` | v1.9 | A real 32-bit counter, run through one full loop. |
 | `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. Its numbers use the v1.3 ratio, 1052. |
 | `LICENSE.md` | | PolyForm Noncommercial 1.0.0. |
 
