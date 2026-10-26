@@ -1,10 +1,10 @@
 --------------------------------------------------
-CANONICAL SUBSTRATE ENGINE (CSE) v1.8: A Deterministic Computational Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v1.9: A Deterministic Computational Cosmological Logic Model
 --------------------------------------------------
 
 A Note from the Author
 
-1. Built in Logic Isolation: This model was developed in complete isolation from outside academic bias, groupthink, or mainstream theoretical trends. 
+1. Built in Logic Isolation: This model was developed in complete isolation from outside academic bias, groupthink, or mainstream theoretical trends.
 2. Empiricals as Checksums: Because it was built in isolation, real-world scientific empiricals were never used as input knobs to curve-fit the model; instead, they were used strictly as external checksums to test if the closed-loop logic held true.
 3. Pure Primitives & Zero Tolerance for Handwaving: It is constructed entirely on bare logic, integer numbers, finites, arithmetic, and polarity change. Numerology, mysticism, and handwaving were aggressively purged; in a strict closed-loop system, ungrounded assumptions immediately break the math.
 4. Tri-Domain Architecture: It draws its framework from Computer Science (CS), Electrical Engineering (EE), and Natural System Mechanics.
@@ -13,17 +13,16 @@ A Note from the Author
 7. Not a Theory of Everything: I do not claim this is a definitive Theory of Everything, but others are welcome to explore, test, and stress-test it as one.
 8. Not a Physics Model: This is a discrete computational and systems architecture—not a traditional physics model. I am not offering a new interpretation of spacetime or quantum mechanics; I am providing a closed-loop arithmetic framework. It is up to physicists or domain experts to test the register arithmetic and determine how it maps to their fields, if they choose to do so.
 9. Reverse-Engineering Pattern Match: This is not proposed as the ultimate, absolute "true nature" of the universe. It is a reverse-engineered pattern-matching model framed intentionally in CS, EE, and systems terms.
-10. Radical Simplicity: It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up. 
+10. Radical Simplicity: It has been kept as simple and transparent as possible so that any reasonably logical and mathematically gifted mind can grasp its mechanics from the ground up.
 11. Independent Analytical Utility: The computational logic, state architecture, and closure principles presented in CSE may be examined as an analytical methodology in their own right, independently of any proposed physical interpretation. Researchers are invited to test the methodology's utility, identify its limitations, and develop applications where appropriate.
-12. Universal Read-Only Memory (UROM) Architecture: The Root Container is a strictly read-only execution environment (UROM). There are no write-heads, dynamic memory allocations outside pre-compiled boundaries, or root privileges. Observers and subnets run as immutable diagnostic subroutines; state transitions and error corrections operate strictly via local buffer/register adjustments ($\delta$), never by flashing the master ROM.
 
 Break it, test it, or build upon it—the ledger is open.
 
 --------------------------------------------------
 
-SYSTEM: Root Container (Nest 0) [UROM: Universal Read-Only Memory]
+SYSTEM: Root Container (Nest 0)
 BOUNDARY: All nested states are inside Nest 0.
-TOPOLOGY: Finite Closed Loop (Immutable ROM image; linear sequence of discrete steps)
+TOPOLOGY: Finite Closed Loop (linear sequence of discrete steps)
 
 --------------------------------------------------
 STRUCTURE (Three Sections, Chained)
@@ -68,7 +67,7 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS
 - STATE VALUE: Bound energy at s (Nest 1).
 - TRANSITION: Movement from one position to the next.
 - PHASE (= ARC): One ordered traversal of all positions. Phase 1: 0 to M. Phase 2: M to 0.
-- REVERSAL (P): Polarity inversion operator. Reverses direction of expansion. Not a step. Twice per cycle: at 0 and at M.
+- REVERSAL (P): Polarity inversion operator. Reverses direction of expansion. Not a step. Twice per cycle: at 0 and at M. P is the polarity parity switch.
 - STATE VISIT: One occurrence of a position during a cycle.
 - CYCLE COUNT: Exactly 2^32 = 4,294,967,296 counted operations per cycle: 2^31 per phase: 1 reversal, then M transitions.
 - TRANSITION COUNT: Exactly 2^32 - 2 per cycle.
@@ -93,6 +92,8 @@ PRIMITIVES:
 - [Kernel-1]: Start of Phase 1 increments (first of M).
 - [Kernel-S0]: Upper bound arrival scalar == M. P engages.
 - [Kernel-S1]: First position of Phase 2 (first of M decrements).
+- P = polarity parity switch (Global Definitions).
+- M = finite complexity limit (Global Definitions).
 
 CYCLE COUNT:
 - P at [Kernel-0]: +1
@@ -131,6 +132,7 @@ RULES:
 8. Reset: At [Kernel-0] time resets to 0. Time point 2 of one cycle is time point 0 of next.
 9. Total Runtime: 2^32 - 1 ticks per cycle.
 10. Tick Count: Reversal at [Kernel-0] at tick 0. Arc 1 = M ticks. Reversal at [Kernel-S0] = 1 tick. Arc 2 = M ticks. Total = 2M + 1 = 2^32 - 1.
+11. Time Rate Bounds: Time rate is finite. Minimum = 0 (stopped). Maximum = unperturbed background rate (Rule 7 baseline). No rate outside [0, background].
 
 --------------------------------------------------
 NEST 3: Energy Spectrum Engine
@@ -142,6 +144,7 @@ RULES:
 4. Topological Result: One bounded line 0 to M.
 5. Position Formula: At s bound = s / M free = 1 - s / M total = 1.
 6. Spectrum Content: Full spectrum from EM radiation at free end to matter at bound end.
+7. Regime Labels: The single spectrum admits three descriptive labels: below-equilibrium (expanding), at-equilibrium (balanced), above-equilibrium (contracting). These label intervals on the Rule 5 line, partitioned at the whole-sphere value (Nest 5 Rule 2); they are not separate sub-loops.
 
 --------------------------------------------------
 NEST 4: Sphere Formatting Engine
@@ -180,7 +183,7 @@ RULES:
 16. Room for Gravity: Local bound cannot exceed 1 so excess at most free fraction 1 - s / M. Room shrinks outward. One position from Pole 1 exactly 1 gap 1 / M. At Pole 1 0.
 17. Local Values: Substrate fixes limits and balance not value at one place. Deterministic on whole-sphere tier.
 18. Speed Time: Place moving faster than surroundings up to step rate local time slow proportional to speed.
-19. Local Rate: Local state visits per tick. 1 at whole-sphere value and at rest. Below 1 under Rule 13 or 18. Above 1 around them.
+19. Local Rate: Local state visits per tick. 1 at whole-sphere value and at rest. Below 1 under Rule 13 or 18. Above 1 around them. Where local bound energy equals whole-sphere value (space lacks excess energy), local time rate = 1 unperturbed.
 20. Local Invariant: Local bound energy x local time rate = baseline of that place.
 
 --------------------------------------------------
@@ -287,6 +290,7 @@ RULES:
    - Expansion of energy read as stretching of space itself. Positions do not stretch.
    - Slow local time read as shortening of length. Positions do not shorten.
    - alpha_inv_local read as fundamental constant. Composite 136 + 1 + delta. See Order of Operations Rules 2 3 4.
+   - Physical-real time is unidirectional (Nest 2 Rule 7); space/length is locked (positions neither stretch nor shorten).
 6. Observer 1: Articulates logic of substrate without seeing it.
 7. No Alteration: Neither observer changes substrate.
 8. Units: Meters seconds joules human engineering units. Not part of substrate.
@@ -308,7 +312,7 @@ RULES:
 3. Computers: Inside sphere. Observers built them (Nest 11).
 4. Efficiency: Observers found computers work most efficiently with whole units and limit M.
 5. The 32-Bit Register: Has 2^32 states cycle count of Nest 0. Largest signed value M.
-6. Self-Similarity: Computer self-similar to substrate same rules smaller scale.
+6. Self-Similarity: Computer self-similar to substrate, same rules, smaller scale. Tiers are identical in kernel template; only the arithmetic that dynamically rebalances interconnected dependencies differs by tier depth (Nest 7 Rule 7, Nest 12 Rule 2).
 7. Inherited Limits: Same kinds of limits: whole units fixed upper limit one operation at a time.
 8. Digital Loop: Substrate contains observers. Observers build computers. Computers repeat substrate template. Closes loop.
 9. No Alteration: Computers and observers describe substrate do not change it.
@@ -327,6 +331,7 @@ RULES:
 8. EM Correction Principle: External EM field tuned to 136 + 1 + delta_target forces local frequency to phase lock. G_substrate = 1 enforces balance.
 9. Aging: Aging = delta accumulation over time.
 10. Hardware Basis: Substrate uses 32 bit signed two complement 1 bit polarity 8 bit magnitude 23 bit mantissa 1 + 8 + 23 = 32 equals IEEE 754 single precision. Only width where G = 1 self correcting via overflow.
+11. Stop-Limit Dynamics: At the stop-limit (Order of Operations Rule 6), dynamics suspend: friction cannot dissipate; compressed energy is stored inert until reset (Nest 6 Rules 4 to 5).
 
 --------------------------------------------------
 BLOCK A: Inputs (Observer 0, unknowingly EM dilated)
@@ -339,7 +344,6 @@ BLOCK A: Inputs (Observer 0, unknowingly EM dilated)
 6. G_local human approx 6.674e-11 cubic meters per kilogram per second squared. G_local substrate = 5.325e-05 substrate units. See Order of Operations Rule 5 for derivation. Conversion factor 1.253357788e-06 via master chain.
 7. Inputs 1 to 3 are Observer 0 estimates taken as given.
 8. Local numbers: human-unit values of c ħ are local to Local Observer 0. G_local human derived via master chain. G_substrate = 1 is substrate property.
-9. Rounding note: Inputs 1 to 3 are stated rounded with tilde ∼. Exact closed-loop values are back-solved figures in Block B. Order A applied to rounded inputs returns ticks to within approx 0.05 percent not exactly. Order B forward from exact ticks gives exact years.
 
 --------------------------------------------------
 BLOCK B: Second-Chain Results (Ticks and Observer 0 Years)
@@ -373,10 +377,10 @@ BLOCK D: Numerical Checks (Falsifiable Tests)
 Test 1 136 = 4 tiers * 32 bits + 8 control = 128 + 8 exact - CS EE derivation no division
 Test 2 G_calc substrate = 1 / (136 + 1 + 0.035999)^2 = 5.325e-05 substrate units. G_calc human = 5.325e-05 * 1.253e-06 = 6.674e-11 matches measured G. See Order of Operations Rule 5.
 Test 3 c_local proportional to 1 / alpha_inv_local predicts time dilation
-Test 4 Void delta 0.01 vs cluster delta 0.06 predicts 6x delta variance and approx 0.073 percent G variance substrate = 5.327e-05 vs 5.323e-05 ratio 1.00073
+Test 4 Void delta 0.01 vs cluster delta 0.06 predicts 5x G variance
 Test 5 Black hole max alpha_inv approaches 273 then evaporates no singularity. See Order of Operations Rule 6.
 All tests are falsifiable
 
 --------------------------------------------------
-END OF CSE v1.8 
+END OF CSE v1.9
 --------------------------------------------------
