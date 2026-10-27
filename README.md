@@ -15,7 +15,7 @@ CSE is a logic model written in three chained sections: **substrate** (counts on
 | `CSE_MODEL.txt` | v1.9 | The model: three sections, Nests 0 to 13, Blocks A to D. Also usable as a prompt. |
 | `cse_engine.py` | v1.9 | The model in executable form. Standard library only. |
 | `cse_ai_example.py` | v1.9 | How to wire the engine into an AI system. Not yet updated to v1.9. |
-| `counter_test.c` | v1.3 | A real 32-bit counter, run through one full loop. Not yet updated to v1.9. |
+| `counter_test.c` | v1.9 | A real 32-bit counter, run through one full loop. Not yet updated to v1.9. |
 | `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. Uses the v1.3 ratio, 1052. |
 | `LICENSE.md` | | PolyForm Noncommercial 1.0.0. |
 
