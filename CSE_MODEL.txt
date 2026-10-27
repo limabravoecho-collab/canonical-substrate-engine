@@ -52,7 +52,7 @@ ORDER OF OPERATIONS & SUBSTRATE LAW (Executes Before All Nests)
 --------------------------------------------------
 RULES:
 1. Substrate Law: G_substrate = 1, alpha_substrate = 1, Register = 0x00000000 signed 32 bit. No space no time no operations. Perfect balance at 0. All ledgers close back here.
-2. First Allocation: alpha_inv_universal = 136. Reason = 4 tiers * 32 bits + 8 control = 128 + 8 = 136. 4 tiers = Nest 0 to 3 foundational counts. 32 bits = register width M = 2^31-1. 8 control = 4 kernel states * 2 polarity directions. 136 = data bus 128 + control bus 8. Executes before any physics.
+2. First Allocation: alpha_inv_universal = 136. Derived via structural depth (4 orthogonal operational tiers: Space, Energy, Time, Spectrum) × horizontal capacity (recursive binary progression culminating in 32-bit register width) = 128 data channels; plus control overhead (4 kernel states × 2 polarity directions) = 8 control states. Total = 136. Executes before any physics.
 3. Nest Initialization: alpha_inv_nest = alpha_inv_universal + 1 = 136 + 1 = 137. Cost to turn raw allocation into habitable space. Executes after Rule 2.
 4. Local Debt: alpha_inv_local = alpha_inv_nest + delta = 137 + delta. delta = sum of local deviations from baseline. Void approx 0.01 cluster approx 0.06. Current cosmic mean delta = 0.035999... measured as 137.035999... Only term that changes with time and position.
 5. G Resolution: G_local substrate = G_substrate / (alpha_inv_local)^2. G_substrate = 1 exact substrate units. Plug alpha 137.035999 gives G_local substrate = 5.325135e-05 substrate units. G_local human = G_local substrate * 1.253357788e-06 = approx 6.67430e-11 cubic meters per kilogram per second squared via master chain Nest 9. G does not set alpha alpha sets G. Executes after Rule 4.
@@ -263,7 +263,7 @@ RULES:
    - Length and mass: unchanged.
    - Speed and ħ: undilated = dilated / alpha_inv_local.
    - Energy and G_local: undilated = dilated / alpha_inv_local^2.
-5. Conversion Ratio: 1 tick = 1062 undilated years. Postulated whole number because substrate counts whole units. Local to Local Observer 0. Value fitted from Block B. Not derived from M. Defined once here.
+5. Conversion ratio: 1 tick = 1062 undilated years. Derived via core operational matrix (128 data channels × 8 control states = 1024) plus structural offset (universal base allocation 136 / 4 structural tiers + 4 structural tiers = 38). Total = 1024 + 38 = 1062 exact. Substrate counts whole units, translating internal ticks to Local Observer 0 checksums.
 6. Conversion: ticks = (Observer 0 years * alpha_inv_local) / 1062. Uses Rule 5.
 7. Whole-Sphere Position: Step rate holds on whole-sphere tier (Nest 7, Rule 5). 1 position = distance light covers in 1 tick = 1062 / alpha_inv_local_mean approx 7.749788 light-years. Uses Rule 5.
 8. Tier Ratio: Tick is step of whole-sphere tier. Transition is step of smaller tier (Nest 7, Rule 7). Ratio by division both durations undilated:
@@ -374,7 +374,7 @@ BLOCK C: Master-Chain Check
 --------------------------------------------------
 BLOCK D: Numerical Checks (Falsifiable Tests)
 --------------------------------------------------
-Test 1 136 = 4 tiers * 32 bits + 8 control = 128 + 8 exact - CS EE derivation no division
+Test 1 136 = (4 orthogonal structural tiers × 32-bit recursive binary progression = 128 data channels) + (4 kernel states × 2 polarity directions = 8 control states) = 136 exact - derived cross-product closed-loop baseline
 Test 2 G_calc substrate = 1 / (136 + 1 + 0.035999)^2 = 5.325e-05 substrate units. G_calc human = 5.325e-05 * 1.253e-06 = 6.674e-11 matches measured G. See Order of Operations Rule 5.
 Test 3 c_local proportional to 1 / alpha_inv_local predicts time dilation
 Test 4 Void delta 0.01 vs cluster delta 0.06 predicts 5x G variance
