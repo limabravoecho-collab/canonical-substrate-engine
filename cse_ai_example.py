@@ -64,7 +64,12 @@ TRANSLATOR_RULE = (
 # The engine returns the exact state for that fraction.
 # ==================================================
 def tier_state(fraction: float) -> dict:
-    """Exact engine state for a cycle that is `fraction` (0 to 1) complete."""
+    """Exact engine state for a cycle that is `fraction` (0 to 1) complete.
+
+    fraction = 1.0 maps to op = CYCLE_COUNT + 1, which the engine reads as
+    cycle 1, operation 1: the loop has closed and we are back at Pole 0.
+    That wrap is intentional, not an off-by-one.
+    """
     op = min(int(fraction * cse.CYCLE_COUNT) + 1, cse.CYCLE_COUNT)
     return cse.state(op)
 
@@ -115,9 +120,12 @@ def engine_line(now: datetime | None = None, words: bool = True) -> str:
     if words:
         body = " ".join(f"{name}: {tier_words(f)}." for name, f in tiers.items())
     else:
-        body = " ".join(
-            f"{name}: phase {tier_state(f)['phase']}, bound {tier_state(f)['bound']:.6f}."
-            for name, f in tiers.items())
+        # Compute each tier once; do not call tier_state twice per tier.
+        cells = []
+        for name, f in tiers.items():
+            st = tier_state(f)
+            cells.append(f"{name}: phase {st['phase']}, bound {st['bound']:.6f}.")
+        body = " ".join(cells)
     return "ENGINE: " + body
 
 
@@ -150,8 +158,14 @@ def engine_answer(query: str) -> str | None:
             result = cse.appendix_a()
         elif parts == ["block_d"]:
             result = cse.block_d()
-        elif parts == ["alpha"]:
-            result = cse.alpha_stack()
+        elif len(parts) >= 1 and parts[0] == "alpha":
+            # One branch for both forms: "alpha" (cosmic mean) and "alpha X".
+            if len(parts) == 1:
+                result = cse.alpha_stack()
+            elif len(parts) == 2:
+                result = cse.alpha_stack(float(parts[1]))
+            else:
+                return None
         elif len(parts) == 2 and parts[0] == "state":
             result = cse.state(int(parts[1]))
         elif len(parts) == 2 and parts[0] == "position":
@@ -164,8 +178,6 @@ def engine_answer(query: str) -> str | None:
             result = cse.order_a(float(parts[1]))
         elif len(parts) == 2 and parts[0] == "order_b":
             result = cse.order_b(float(parts[1]))
-        elif len(parts) == 2 and parts[0] == "alpha":
-            result = cse.alpha_stack(float(parts[1]))
         elif len(parts) == 3 and parts[0] == "local":
             result = cse.local(float(parts[1]), int(parts[2]))
         elif len(parts) == 3 and parts[0] == "regime":
@@ -197,6 +209,7 @@ def bridge(s: int) -> dict:
         "position": p["position"],
         "bound_fraction": p["bound"],
         "free_fraction": p["free"],
+        "total": p["total"],
         "radius_meters": planck["radius_meters"],
         "bound_joules": planck["bound_joules"],
     }
