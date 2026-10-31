@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-cse_engine.py - Canonical Substrate Engine (CSE) v1.9
+cse_engine.py - Canonical Substrate Engine (CSE) v2.0
 A Deterministic Computational Cosmological Logic Model, in executable form.
 
 This file computes only what the model defines with a number or a formula.
