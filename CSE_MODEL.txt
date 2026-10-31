@@ -1,5 +1,5 @@
 --------------------------------------------------
-CANONICAL SUBSTRATE ENGINE (CSE) v1.9: A Deterministic Computational Cosmological Logic Model
+CANONICAL SUBSTRATE ENGINE (CSE) v2.0: A Deterministic Computational Cosmological Logic Model
 --------------------------------------------------
 
 A Note from the Author
@@ -52,7 +52,8 @@ ORDER OF OPERATIONS & SUBSTRATE LAW (Executes Before All Nests)
 --------------------------------------------------
 RULES:
 1. Substrate Law: G_substrate = 1, alpha_substrate = 1, Register = 0x00000000 signed 32 bit. No space no time no operations. Perfect balance at 0. All ledgers close back here.
-2. First Allocation: alpha_inv_universal = 136. Derived via structural depth (4 orthogonal operational tiers: Space, Energy, Time, Spectrum) × horizontal capacity (recursive binary progression culminating in 32-bit register width) = 128 data channels; plus control overhead (4 kernel states × 2 polarity directions) = 8 control states. Total = 136. Executes before any physics.
+1a. Execution Primitive (Triadic): The single operation the register performs is triadic: (+1, 0, -1). +1 = one increment of the register, one position outward. 0 = the ground-state flush at [Kernel-0], register held at balance. -1 = one decrement of the register, one position inward. Every transition is exactly one instance of +1 or -1. Reversal P is the crossing through 0. Defined here once; nests refer back to this rule.
+2. First Allocation: alpha_inv_universal = 136. Two parts. First, control states: 4 kernel states (Nest 0) × 2 polarity directions (Rule 1a) = 8 control states. This is the primitive instantiated, derived. Second, data channels: 4 operational tiers (Space, Energy, Time, Spectrum) × 32-bit register width = 128 data channels. The 4 tiers are postulated, not derived. The 32-bit width is postulated here, reason at Nest 13 Rule 10. Total = 8 + 128 = 136. Executes before any physics.
 3. Nest Initialization: alpha_inv_nest = alpha_inv_universal + 1 = 136 + 1 = 137. Cost to turn raw allocation into habitable space. Executes after Rule 2.
 4. Local Debt: alpha_inv_local = alpha_inv_nest + delta = 137 + delta. delta = sum of local deviations from baseline. Void approx 0.01 cluster approx 0.06. Current cosmic mean delta = 0.035999... measured as 137.035999... Only term that changes with time and position.
 5. G Resolution: G_local substrate = G_substrate / (alpha_inv_local)^2. G_substrate = 1 exact substrate units. Plug alpha 137.035999 gives G_local substrate = 5.325135e-05 substrate units. G_local human = G_local substrate * 1.253357788e-06 = approx 6.67430e-11 cubic meters per kilogram per second squared via master chain Nest 9. G does not set alpha alpha sets G. Executes after Rule 4.
@@ -73,6 +74,7 @@ GLOBAL DEFINITIONS & COUNTING CONVENTIONS
 - TRANSITION COUNT: Exactly 2^32 - 2 per cycle.
 - TICK: One advance of 32-bit counter. At 0 at first operation of cycle. Highest value 2^32 - 1.
 - TIME (Axiom): Ordered sequence of transitions across macro-cycle.
+- LOCAL: Our energy state at our moment. Bound fraction at our place, and time point. Position s is only the address, not the state. Space is static. Delta is the deviation of the local state from baseline, not the state itself.
 
 --------------------------------------------------
 META-RULE: SELF-SIMILARITY & ORDER
@@ -80,6 +82,7 @@ META-RULE: SELF-SIMILARITY & ORDER
 - Self-Similarity: Nest 0 kernel template same on every tier (Nest 7, Rule 7).
 - Order: Three sections chained. Nests numbered in order.
 - Substrate alpha = 1 no dilation. See Order of Operations Rules 1 to 4 for alpha stack.
+- Triadic Systems: Three systems run on the primitive (Rule 1a). Nest 0: space position, +1 and -1 along s, static. Nest 1: energy transfer, free and bound, N = 1 invariant. Alpha stack: baseline 136, +1 activation, signed delta. Nest 5 pockets and voids are the local form of Nest 1, not a fourth system.
 
 --------------------------------------------------
 NEST 0: Space Engine
@@ -96,11 +99,10 @@ PRIMITIVES:
 - M = finite complexity limit (Global Definitions).
 
 CYCLE COUNT:
-- P at [Kernel-0]: +1
-- Phase 1: M increments
-- P at [Kernel-S0]: +1
-- Phase 2: M decrements
-- Cycle completes: 2^32
+- P at [Kernel-0]: one 0-crossing (Rule 1a)
+- Phase 1: M instances of +1 (Rule 1a)
+- P at [Kernel-S0]: one 0-crossing (Rule 1a)
+- Closure (derivation): Phase 2 is Phase 1 inverted. -1 is the inverse of +1; 0 is self-inverse. The cycle returns to its start under inversion, so the loop closes structurally. P is the postulated trigger that applies inversion at M and at 0.
 
 --------------------------------------------------
 NEST 1: Energy Conservation Engine
@@ -117,12 +119,14 @@ SEMANTICS:
 - Free energy = M - s units. Bound energy = s units.
 - Free + bound = M units. Normalized N = 1.
 - State Value = bound energy at s.
+- N = 1 belongs to Nest 1 only. Expansion (Nest 0) is space position, not energy. Expansion drives transfer; transfer conserves N = 1.
+- Containment: The container is the fixed space (Nest 0, Nest 4). The triadic system is the transfer inside it, free and bound. "Energy transfer under containment" is the precise name; containment alone is the static stage, not a triadic system.
 
 --------------------------------------------------
 NEST 2: Time Engine
 --------------------------------------------------
 RULES:
-1. Expansion = Nest 0 space count. Minimum 0 maximum M.
+1. Expansion = Nest 0 space count (Rule 1a). Minimum 0 maximum M.
 2. Time Points: 3 per cycle: 0, 1, 2.
 3. Time Units: 2 per cycle. One time unit = one arc = M transitions.
 4. Arc 1: Time point 0 to 1. Expansion minimum to maximum.
@@ -145,13 +149,14 @@ RULES:
 5. Position Formula: At s bound = s / M free = 1 - s / M total = 1.
 6. Spectrum Content: Full spectrum from EM radiation at free end to matter at bound end.
 7. Regime Labels: The single spectrum admits three descriptive labels: below-equilibrium (expanding), at-equilibrium (balanced), above-equilibrium (contracting). These label intervals on the Rule 5 line, partitioned at the whole-sphere value (Nest 5 Rule 2); they are not separate sub-loops.
+8. Anchor Labels: Bound = 0 at Pole 0 (free extreme, -1 anchor). Bound = 1 at Pole 1 (bound extreme, +1 anchor). Bound = free at bound fraction 1 / 2 (balance, 0 anchor). Pole 0 is the free extreme, not neutral.
 
 --------------------------------------------------
 NEST 4: Sphere Formatting Engine
 --------------------------------------------------
 RULES:
 1. Pole 0: Centre. Position 0 radius 0.
-2. Radial Expansion: Outward from Pole 0 same in every direction. Position s = radius s.
+2. Radial Expansion: Outward from Pole 0 same in every direction. Position s = radius s (Rule 1a).
 3. Shell: Surface at current position s. Outer edge of energy.
 4. Pole 1: Shell at maximum expansion. Position M radius M.
 5. Arc 1: Shell moves outward Pole 0 to Pole 1.
@@ -168,8 +173,8 @@ RULES:
 1. Energy Waves: Waves in local bound fraction inside sphere.
 2. Whole-Sphere Value: Bound fraction of sphere as whole (Nest 4, Rule 7).
 3. Local Bound Fraction: Any value 0 to 1 on Nest 3 spectrum.
-4. Dense Matter Pocket: Local bound above whole-sphere value.
-5. Void: Local bound below or equal to whole-sphere value.
+4. Dense Matter Pocket: Local bound above whole-sphere value (Rule 1a).
+5. Void: Local bound below or equal to whole-sphere value (Rule 1a). Void means this arithmetic case only. The geometric outer boundary (Nest 4, Pole 1) is the shell limit, not a void.
 6. Location: Can form anywhere inside sphere.
 7. Conservation: Total energy = 1. Excess in pockets equals deficit in voids.
 8. Driver: Shell position s only driver of whole-sphere value.
@@ -185,12 +190,13 @@ RULES:
 18. Speed Time: Place moving faster than surroundings up to step rate local time slow proportional to speed.
 19. Local Rate: Local state visits per tick. 1 at whole-sphere value and at rest. Below 1 under Rule 13 or 18. Above 1 around them. Where local bound energy equals whole-sphere value (space lacks excess energy), local time rate = 1 unperturbed.
 20. Local Invariant: Local bound energy x local time rate = baseline of that place.
+21. Nesting: Pockets and voids are siblings inside the sphere, not containers of each other. A pocket does not contain voids or singularities. When the sphere as a whole is described as a container, it is the sphere (Nest 4) that contains them, not a pocket.
 
 --------------------------------------------------
 NEST 6: Closure Engine
 --------------------------------------------------
 RULES:
-1. Return: Arc 2 brings shell back to Pole 0.
+1. Return: Arc 2 returns shell to Pole 0 via -1 steps (Rule 1a).
 2. Time Closure: At Pole 0 every place arrives at time point 2 together.
 3. Even State: At Pole 0 radius 0. Bound 0 free 1.
 4. Reset: At [Kernel-0] time resets to 0.
@@ -203,7 +209,7 @@ NEST 7: Step Engine
 --------------------------------------------------
 RULES:
 1. Foundational Axiom: M is foundational limit. At M reversal P mandatory.
-2. The Three Steps: Three things counted. Every transition moves 1 position and binds or frees 1 energy unit. Unit steps are 1 position, 1 transition, 1 energy unit. Each exactly 1.
+2. The Three Steps: Three things counted. Every transition is one instance of +1 or -1 (Rule 1a). It moves 1 position and binds or frees 1 energy unit. Unit steps are 1 position, 1 transition, 1 energy unit. Each exactly 1.
 3. Substrate Constants: See Order of Operations Rule 5. ħ = 1 energy unit x 1 transition. c = 1 position per transition. G_substrate = 1 position x c^4 / 1 energy unit = 1 exact substrate units. G_local substrate = 1 / alpha^2 = 5.325e-05 substrate units. G_local human = 6.674e-11 via master chain.
 4. Mass Unit: 1 mass unit = 1 energy unit / c^2 = exactly 1.
 5. Step Rate: c is step rate. Nothing moves more than 1 position in 1 transition.
@@ -291,16 +297,16 @@ RULES:
    - Slow local time read as shortening of length. Positions do not shorten.
    - alpha_inv_local read as fundamental constant. Composite 136 + 1 + delta. See Order of Operations Rules 2 3 4.
    - Physical-real time is unidirectional (Nest 2 Rule 7); space/length is locked (positions neither stretch nor shorten).
+   - Local time lag (Nest 5 Rule 15) read as closure failing to be simultaneous (Nest 6 Rule 2). Lag is local-time rate; closure is cycle-indexed. Positions arrive together at time point 2; local rates differ within the cycle. No violation of closure.
 6. Observer 1: Articulates logic of substrate without seeing it.
 7. No Alteration: Neither observer changes substrate.
 8. Units: Meters seconds joules human engineering units. Not part of substrate.
 9. Scope:
-   - Local Observer 0 = observer at our location using years.
-   - Any Observer 0 = observer at any location using own units.
+   - Local Observer 0 = observer at our energy state and moment, using years.
+   - Any Non-Local Observer 0 = observer at any energy state and moment, using own units. Own units means their own measurement system, different from ours.
    - Universal: total runtime in ticks Nest 2 Rule 9, and alpha_inv_universal 136 and alpha_inv_nest 137. See Order of Operations Rules 2 3.
-   - Local varies: alpha_inv_local and delta and G_local. See Order of Operations Rules 4 5. Void delta approx 0.01 cluster approx 0.06.
+   - Postulate: any Non-Local Observer 0 converting with own ratio arrives at same ticks.
    - Local only Local Observer 0: year, conversion ratio 1062, inputs 1 to 3 Block A.
-   - Postulate: any Observer 0 converting with own ratio arrives at same ticks.
    - In Nest 10 and Blocks A to D Observer 0 alone means Local Observer 0.
 
 --------------------------------------------------
@@ -377,10 +383,10 @@ BLOCK D: Numerical Checks (Falsifiable Tests)
 Test 1 136 = (4 orthogonal structural tiers × 32-bit recursive binary progression = 128 data channels) + (4 kernel states × 2 polarity directions = 8 control states) = 136 exact - derived cross-product closed-loop baseline
 Test 2 G_calc substrate = 1 / (136 + 1 + 0.035999)^2 = 5.325e-05 substrate units. G_calc human = 5.325e-05 * 1.253e-06 = 6.674e-11 matches measured G. See Order of Operations Rule 5.
 Test 3 c_local proportional to 1 / alpha_inv_local predicts time dilation
-Test 4 Void delta 0.01 vs cluster delta 0.06 predicts 5x G variance
+Test 4 Void delta 0.01 vs cluster delta 0.06 predicts ~0.07% G variance (delta ratio ~5x, G ratio ~1.0007)
 Test 5 Black hole max alpha_inv approaches 273 then evaporates no singularity. See Order of Operations Rule 6.
 All tests are falsifiable
 
 --------------------------------------------------
-END OF CSE v1.9
+END OF CSE v2.0
 --------------------------------------------------
