@@ -1,4 +1,4 @@
-# Canonical Substrate Engine (CSE) v1.9
+# Canonical Substrate Engine (CSE) v2.0
 
 A deterministic closed-loop logic model with a 2^32 cycle, and an executable Python engine.
 
@@ -12,11 +12,11 @@ CSE is a logic model written in three chained sections: **substrate** (counts on
 
 | File | Version | What it is |
 |---|---|---|
-| `CSE_MODEL.txt` | v1.9 | The model: three sections, Nests 0 to 13, Blocks A to D. Also usable as a prompt. |
-| `cse_engine.py` | v1.9 | The model in executable form. Standard library only. |
-| `cse_ai_example.py` | v1.9 | How to wire the engine into an AI system. Not yet updated to v1.9. |
-| `counter_test.c` | v1.9 | A real 32-bit counter, run through one full loop. Not yet updated to v1.9. |
-| `EXAMPLES.md` | v1.3 | Five science placeholders with the arithmetic shown. Uses the v1.3 ratio, 1052. |
+| `CSE_MODEL.txt` | v2.0 | The model: three sections, Nests 0 to 13, Blocks A to D. Adds the triadic execution primitive (Rule 1a) and the three triadic systems. Also usable as a prompt. |
+| `cse_engine.py` | v2.0 | The model in executable form. Standard library only. |
+| `cse_ai_example.py` | v1.9 | How to wire the engine into an AI system. Not yet updated to v2.0. |
+| `counter_test.c` | v1.9 | A real 32-bit counter, run through one full loop. Not yet updated to v2.0. |
+| `EXAMPLES.md` | v1.6 | Five science placeholders with the arithmetic shown. Uses ratio 1062. Results are stated plainly, including mismatches. |
 | `LICENSE.md` | | PolyForm Noncommercial 1.0.0. |
 
 ---
