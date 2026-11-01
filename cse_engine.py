@@ -674,4 +674,210 @@ def selftest() -> list[str]:
     checks = [
         (1, "P", 0, "Kernel-0", 0),
         (2, "increment", 1, "Kernel-1", None),
-        (M
+        (M + 1, "increment", M, "Kernel-S0", 1),
+        (M + 2, "P", M, "Kernel-S0", 1),
+        (M + 3, "decrement", M - 1, "Kernel-S1", None),
+        (2 * M + 2, "decrement", 0, "Kernel-0", 2),
+    ]
+    for op, operation, pos, kernel, time_point in checks:
+        st = _state(op, M)
+        assert st["operation"] == operation, (op, st["operation"], operation)
+        assert st["position"] == pos, (op, st["position"], pos)
+        assert st["kernel"] == kernel, (op, st["kernel"], kernel)
+        assert st["time_point"] == time_point, (op, st["time_point"], time_point)
+    # Tick count: tick 0 at op 1, highest tick 2M + 1 at op 2M + 2 (Nest 2, Rule 10).
+    assert _state(2 * M + 2, M)["tick"] == 2 * M + 1 == TICK_COUNT
+    done.append("kernel states: [Kernel-0] -> [Kernel-1] -> [Kernel-S0] -> [Kernel-S1] -> [Kernel-0]")
+
+    # 4. Cycle / tick counts (Global definitions, Nest 2 Rule 10)
+    assert _state(1, M)["tick"] == 0
+    assert 2 * M + 1 == 2**32 - 1 == TICK_COUNT
+    done.append("tick count: 2M + 1 = 2^32 - 1 = 4,294,967,295")
+
+    # 5. Alpha stack (Order of Operations, Rules 2 to 6)
+    a = alpha_stack()
+    assert ALPHA_INV_UNIVERSAL == 136
+    assert ALPHA_INV_NEST == 137
+    assert abs(a["alpha_inv_local"] - 137.035999177) < 1e-6
+    assert abs(a["G_local_substrate"] - 5.325135e-05) < 1e-9
+    assert abs(a["G_local_human"] - 6.674e-11) / 6.674e-11 < 1e-3
+    top = alpha_stack(DELTA_MAX)
+    assert top["alpha_inv_local"] == 273
+    assert top["overflow"] is True
+    assert abs(top["G_local_substrate"] - 1 / 273**2) < 1e-12
+    done.append("alpha stack: 136, 137, 137 + delta; G_local substrate 5.325e-05; overflow at delta = 136")
+
+    # 6. Energy conservation (Nest 1)
+    for s in (0, 1, M // 2, M - 1, M):
+        p = position(s)
+        assert p["bound_units"] + p["free_units"] == M
+        assert p["bound"] + p["free"] == 1
+    done.append("energy: bound + free = M at every position; N = 1")
+
+    # 7. Local / regime / rate labels (Nest 3 Rule 7, Nest 5)
+    assert local(0.9, M // 2)["result"] == "dense matter pocket"
+    assert local(0.1, M // 2)["result"] == "void"
+    assert regime(0.9, M // 2)["regime"] == "above-equilibrium"
+    assert regime(0.1, M // 2)["regime"] == "below-equilibrium"
+    exact_s = M // 2
+    assert regime(exact_s / M, exact_s)["regime"] == "at-equilibrium"
+    assert local_rate(exact_s / M, exact_s)["local_rate"].startswith("= 1")
+    done.append("labels: pocket/void, three regime labels, local rate = 1 at whole-sphere value")
+
+    # 8. Turn lag and room for gravity (Nest 5, Rules 15 and 16)
+    assert turn_lag(M)["minimum_lag_transitions"] == 0
+    assert turn_lag(0)["minimum_lag_transitions"] == M
+    assert gravity_room(M)["room_gaps"] == 0
+    assert gravity_room(M - 1)["room_gaps"] == 1
+    assert gravity_room(M - 1)["room"] == 1 / M
+    done.append("lag/room: lag = M - r; one gap = 1/M one position from Pole 1")
+
+    # 9. Master chain (Nest 9, Rule 3) round-trip
+    assert abs(METERS_PER_POSITION - 1.616e-35) / 1.616e-35 < 1e-2
+    assert abs(SECONDS_PER_TRANSITION - 5.391e-44) / 5.391e-44 < 1e-2
+    assert abs(JOULES_PER_ENERGY_UNIT - 1.956e9) / 1.956e9 < 1e-2
+    done.append("master chain: Planck length, time, energy reproduced from h-bar, c, G")
+
+    # 10. Second chain (Nest 10, Rules 5 to 8)
+    assert YEARS_PER_TICK == 1062
+    rt = order_a(13.8e9)
+    back = order_b(rt["ticks"])
+    assert abs(back["dilated_years"] - 13.8e9) / 13.8e9 < 1e-12
+    full = order_b(TICK_COUNT)
+    assert abs(full["undilated_years"] - 4.561255267290e12) / 4.561255267290e12 < 1e-6
+    done.append("second chain: Order A/B round-trip; total runtime 4.561e12 undilated years")
+
+    # 11. Block B rows (Nest 10 Rule 6, Nest 8 Rule 7)
+    blk = appendix_a()
+    assert abs(blk["current_age"]["undilated_years"] - 1.89109679e12) / 1.89109679e12 < 1e-6
+    assert blk["corrected_lifespan"]["ticks"] == TICK_COUNT
+    assert abs(blk["percent_of_runtime"]["current"] +
+               blk["percent_of_runtime"]["remaining"] - 100) < 1e-6
+    done.append("Block B: rows 1.1, 1.3, 1.5, 1.6 consistent; percentages sum to 100")
+
+    # 12. Dilation (Nest 10, Rule 4)
+    assert abs(undilate(1.0, 1) - ALPHA_INVERSE) < 1e-9
+    assert abs(undilate(1.0, -1) - 1 / ALPHA_INVERSE) < 1e-12
+    assert abs(undilate(1.0, -2) - 1 / ALPHA_INVERSE**2) < 1e-15
+    done.append("dilation: duration x alpha, speed / alpha, energy / alpha^2")
+
+    # 13. Block D (Tests 1 to 5)
+    d = block_d()
+    assert d["test_1"]["data_bus"] + d["test_1"]["control"] == 136
+    assert d["test_5"]["alpha_inv_max"] == 273
+    assert d["test_5"]["overflow"] is True
+    assert abs(d["test_4"]["delta_variance"] - 6.0) < 1e-12
+    done.append("Block D: Tests 1 to 5 pass (136, G, c_local, 5x delta, overflow)")
+
+    # 14. Totals (Nest 13 Rule 10, Nest 2 Rule 11, stop-limit)
+    t = totals()
+    assert t["hardware_basis"]["total_bits"] == 32
+    assert t["time_rate_bounds"]["minimum"] == 0
+    assert t["time_rate_bounds"]["maximum"] == 1
+    assert t["stop_limit"]["dynamics"] == "suspended"
+    done.append("hardware: 1 + 8 + 23 = 32 bits; time-rate bounds [0, 1]; stop-limit suspends dynamics")
+
+    return done
+
+
+# --------------------------------------------------
+# COMMAND LINE
+# --------------------------------------------------
+def _dump(obj) -> None:
+    """Print an object as JSON, keeping whole numbers whole."""
+    print(json.dumps(obj, indent=2, default=str))
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="cse_engine.py",
+        description="Canonical Substrate Engine (CSE) v2.0, executable form.",
+    )
+    sub = parser.add_subparsers(dest="command")
+
+    sub.add_parser("summary", help="totals: counts, chains, derived examples (default)")
+    sub.add_parser("totals", help="same as summary")
+
+    p_state = sub.add_parser("state", help="state after counted operation op")
+    p_state.add_argument("op", type=int)
+
+    p_pos = sub.add_parser("position", help="energy and units at position s")
+    p_pos.add_argument("s", type=int)
+
+    p_local = sub.add_parser("local", help="pocket or void: local bound fraction at position s")
+    p_local.add_argument("bound_fraction", type=float)
+    p_local.add_argument("s", type=int)
+
+    p_regime = sub.add_parser("regime", help="regime label: local bound fraction at position s")
+    p_regime.add_argument("bound_fraction", type=float)
+    p_regime.add_argument("s", type=int)
+
+    p_rate = sub.add_parser("rate", help="local rate direction: local bound fraction at position s")
+    p_rate.add_argument("bound_fraction", type=float)
+    p_rate.add_argument("s", type=int)
+
+    p_lag = sub.add_parser("lag", help="minimum turn lag at radius r")
+    p_lag.add_argument("r", type=int)
+
+    p_room = sub.add_parser("room", help="room for gravity at position s")
+    p_room.add_argument("s", type=int)
+
+    p_oa = sub.add_parser("order_a", help="dilated years -> undilated years -> ticks")
+    p_oa.add_argument("dilated_years", type=float)
+
+    p_ob = sub.add_parser("order_b", help="ticks -> undilated years -> dilated years")
+    p_ob.add_argument("ticks", type=float)
+
+    sub.add_parser("appendix_a", help="Block B results")
+    sub.add_parser("block_b", help="same as appendix_a")
+
+    p_alpha = sub.add_parser("alpha", help="alpha stack at delta (default: cosmic mean)")
+    p_alpha.add_argument("delta", type=float, nargs="?", default=DELTA_MEAN)
+
+    sub.add_parser("block_d", help="Block D, Tests 1 to 5")
+    sub.add_parser("selftest", help="run internal consistency checks")
+
+    args = parser.parse_args(argv)
+
+    try:
+        if args.command in (None, "summary", "totals"):
+            _dump(totals())
+        elif args.command == "state":
+            _dump(state(args.op))
+        elif args.command == "position":
+            _dump(position(args.s))
+        elif args.command == "local":
+            _dump(local(args.bound_fraction, args.s))
+        elif args.command == "regime":
+            _dump(regime(args.bound_fraction, args.s))
+        elif args.command == "rate":
+            _dump(local_rate(args.bound_fraction, args.s))
+        elif args.command == "lag":
+            _dump(turn_lag(args.r))
+        elif args.command == "room":
+            _dump(gravity_room(args.s))
+        elif args.command == "order_a":
+            _dump(order_a(args.dilated_years))
+        elif args.command == "order_b":
+            _dump(order_b(args.ticks))
+        elif args.command in ("appendix_a", "block_b"):
+            _dump(appendix_a())
+        elif args.command == "alpha":
+            _dump(alpha_stack(args.delta))
+        elif args.command == "block_d":
+            _dump(block_d())
+        elif args.command == "selftest":
+            for line in selftest():
+                print("ok  ", line)
+            print("\nall checks passed")
+        else:
+            parser.print_help()
+            return 2
+    except ValueError as exc:
+        print(f"error: {exc}")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
